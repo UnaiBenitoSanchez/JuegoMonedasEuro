@@ -176,6 +176,17 @@
       filter: brightness(1.1);
     }
     
+    .coin.moneda-usada {
+      opacity: 0.3 !important;
+      cursor: not-allowed !important;
+      filter: grayscale(50%);
+    }
+    
+    .coin.moneda-usada:hover {
+      transform: none !important;
+      filter: grayscale(50%) !important;
+    }
+    
     /* === CAMBIOS EN LAS MONEDAS DE 1 Y 2 EUROS === */
 
     .coin-1 {
@@ -761,7 +772,8 @@
               partida_id: partidaActualId,
               orden_turno: i,
               turno_activo: i === 0,
-              nivel_actual: 1
+              nivel_actual: 1,
+              dificultad_partida: dificultadJuego
             });
           }
         }
@@ -801,6 +813,11 @@
       
       jugadorActual = jugador;
       nivelActual = jugador.nivel_actual;
+      
+      // Recuperar la dificultad guardada en la partida
+      if (jugador.dificultad_partida) {
+        dificultadJuego = jugador.dificultad_partida;
+      }
       
       jugadoresPartida = todosJugadores
         .filter(j => j.partida_id === jugador.partida_id)
@@ -874,8 +891,16 @@
           ...jugador,
           partida_id: '',
           turno_activo: false,
-          orden_turno: 0
+          orden_turno: 0,
+          dificultad_partida: ''
         });
+      }
+      
+      // Resetear el botón
+      const boton = document.getElementById('btn-terminar-partida');
+      if (boton) {
+        boton.disabled = false;
+        boton.textContent = '🏁 Terminar Partida';
       }
       
       mostrarEstadisticas();
@@ -971,6 +996,14 @@
       document.getElementById('suma-actual').textContent = '0.00€';
       zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
       document.getElementById('mensaje-feedback').classList.add('hidden');
+      
+      // Reactivar todas las monedas
+      const todasLasMonedas = document.querySelectorAll('#area-monedas .coin');
+      todasLasMonedas.forEach(moneda => {
+        moneda.classList.remove('moneda-usada');
+        moneda.style.opacity = '1';
+        moneda.style.cursor = 'grab';
+      });
     }
     
     function iniciarNivel(nivel) {
@@ -1067,6 +1100,11 @@
   moneda.setAttribute('aria-label', etiqueta);
 
   moneda.addEventListener('dragstart', e => {
+    // Verificar si la moneda ya fue usada
+    if (e.target.classList.contains('moneda-usada')) {
+      e.preventDefault();
+      return;
+    }
     monedaArrastrada = e.target;
     e.target.style.opacity = '0.5';
   });
@@ -1103,6 +1141,11 @@
       
       if (monedasSoltadas.some(m => m.id === id)) return;
       
+      // Marcar la moneda original como usada
+      monedaArrastrada.classList.add('moneda-usada');
+      monedaArrastrada.style.opacity = '0.3';
+      monedaArrastrada.style.cursor = 'not-allowed';
+      
       const nuevaMoneda = crearMoneda(valorCent, id);
       nuevaMoneda.style.cursor = 'pointer';
       nuevaMoneda.title = 'Click para quitar';
@@ -1121,7 +1164,25 @@ nuevaMoneda.draggable = false;
   (sumaActualCent / 100).toFixed(2) + '€';
       
       if (sumaActualCent <= objetivoActualCent) {
-        hablar('Bien');
+        // Array de mensajes positivos aleatorios
+        const mensajesPositivos = [
+          '¡Bien!',
+          '¡Excelente!',
+          '¡Muy bien!',
+          '¡Genial!',
+          '¡Perfecto!',
+          '¡Sigue así!',
+          '¡Vas bien!',
+          '¡Buen trabajo!',
+          '¡Fantástico!',
+          '¡Increíble!',
+          '¡Estupendo!',
+          '¡Bravo!',
+          '¡Lo estás haciendo bien!',
+          '¡Magnífico!'
+        ];
+        const mensajeAleatorio = mensajesPositivos[Math.floor(Math.random() * mensajesPositivos.length)];
+        hablar(mensajeAleatorio);
       } else {
         hablar('Cuidado, es demasiado');
       }
@@ -1140,6 +1201,14 @@ document.getElementById('suma-actual').textContent =
       
       const elemento = zonaSoltar.querySelector(`[data-id="${id}"]`);
       if (elemento) elemento.remove();
+      
+      // Reactivar la moneda original en el área de monedas
+      const monedaOriginal = document.querySelector(`#area-monedas .coin[data-id="${id}"]`);
+      if (monedaOriginal) {
+        monedaOriginal.classList.remove('moneda-usada');
+        monedaOriginal.style.opacity = '1';
+        monedaOriginal.style.cursor = 'grab';
+      }
       
       if (monedasSoltadas.length === 0) {
         zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
@@ -1327,6 +1396,14 @@ document.getElementById('suma-actual').textContent =
       document.getElementById('suma-actual').textContent = '0.00€';
       zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
       document.getElementById('mensaje-feedback').classList.add('hidden');
+      
+      // Reactivar todas las monedas
+      const todasLasMonedas = document.querySelectorAll('#area-monedas .coin');
+      todasLasMonedas.forEach(moneda => {
+        moneda.classList.remove('moneda-usada');
+        moneda.style.opacity = '1';
+        moneda.style.cursor = 'grab';
+      });
     });
     
     document.getElementById('btn-pista').addEventListener('click', () => {
@@ -1334,11 +1411,24 @@ document.getElementById('suma-actual').textContent =
       let pista = '';
       
       if (falta > 0) {
-        const dos = Math.floor(falta / 2);
-        const uno = falta % 2;
-        pista = `💡 Necesitas ${dos > 0 ? dos + ' de 2€' : ''} ${dos > 0 && uno > 0 ? 'y' : ''} ${uno > 0 ? uno + ' de 1€' : ''}`;
+        const faltaEuros = falta / 100;
+        const dos = Math.floor(falta / 200);
+        const uno = Math.floor((falta % 200) / 100);
+        const cincuenta = Math.floor((falta % 100) / 50);
+        const veinte = Math.floor((falta % 50) / 20);
+        const diez = (falta % 20) / 10;
+        
+        let partes = [];
+        if (dos > 0) partes.push(`${dos} de 2€`);
+        if (uno > 0) partes.push(`${uno} de 1€`);
+        if (cincuenta > 0) partes.push(`${cincuenta} de 50¢`);
+        if (veinte > 0) partes.push(`${veinte} de 20¢`);
+        if (diez > 0) partes.push(`${diez} de 10¢`);
+        
+        pista = `💡 Te faltan ${faltaEuros.toFixed(2)}€. Necesitas: ${partes.join(', ')}`;
       } else if (falta < 0) {
-        pista = `💡 Sobran ${Math.abs(falta)}€. Quita monedas`;
+        const sobraEuros = Math.abs(falta) / 100;
+        pista = `💡 Sobran ${sobraEuros.toFixed(2)}€. Quita monedas`;
       } else {
         pista = '✓ ¡Perfecto! Pulsa Comprobar';
       }
