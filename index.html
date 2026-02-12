@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="es" class="h-full">
- <head>
+
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juego de Monedas Euros</title>
-  
+
   <script>
     window.elementSdk = {
-      init: function(options) {
+      init: function (options) {
         this.config = options.defaultConfig;
-        if(options.onConfigChange) {
+        if (options.onConfigChange) {
           options.onConfigChange(this.config);
         }
       }
@@ -18,16 +19,16 @@
     window.dataSdk = {
       data: [],
       listener: null,
-      init: async function(listener) {
+      init: async function (listener) {
         this.listener = listener;
         const storedData = localStorage.getItem('juego_monedas_data');
         if (storedData) {
           this.data = JSON.parse(storedData);
         }
-        setTimeout(() => this.notificarCambios(), 100); 
+        setTimeout(() => this.notificarCambios(), 100);
         return { isOk: true };
       },
-      create: async function(item) {
+      create: async function (item) {
         if (!item.__backendId) item.__backendId = 'id_' + Date.now();
         if (!item._backendId) item._backendId = item.__backendId;
         this.data.push(item);
@@ -35,7 +36,7 @@
         this.notificarCambios();
         return { isOk: true };
       },
-      update: async function(item) {
+      update: async function (item) {
         const index = this.data.findIndex(d => d.__backendId === item.__backendId || d._backendId === item._backendId);
         if (index !== -1) {
           this.data[index] = { ...this.data[index], ...item };
@@ -45,16 +46,16 @@
         }
         return { isOk: false, error: "Item no encontrado" };
       },
-      delete: async function(item) {
+      delete: async function (item) {
         this.data = this.data.filter(d => d.__backendId !== item.__backendId && d._backendId !== item._backendId);
         this.saveToStorage();
         this.notificarCambios();
         return { isOk: true };
       },
-      saveToStorage: function() {
+      saveToStorage: function () {
         localStorage.setItem('juego_monedas_data', JSON.stringify(this.data));
       },
-      notificarCambios: function() {
+      notificarCambios: function () {
         if (this.listener && this.listener.onDataChanged) {
           this.listener.onDataChanged([...this.data]);
         }
@@ -70,7 +71,7 @@
       font-family: 'Nunito', sans-serif;
       overflow: hidden;
     }
-    
+
     .floating-coins {
       position: fixed;
       bottom: 0;
@@ -81,7 +82,7 @@
       z-index: 5;
       overflow: hidden;
     }
-    
+
     .floating-coin {
       position: absolute;
       width: 50px;
@@ -97,42 +98,45 @@
       font-size: 18px;
       bottom: -60px;
     }
-    
+
     .floating-coin.gold {
       background: radial-gradient(circle at 30% 30%, #FFD700, #DAA520, #B8860B);
       border: 2px solid #8B7355;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px rgba(255,255,255,0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.2), inset 2px 2px 4px rgba(255, 255, 255, 0.3);
     }
-    
+
     .floating-coin.silver {
       background: radial-gradient(circle at 30% 30%, #E8E8E8, #C0C0C0, #A8A8A8);
       border: 2px solid #707070;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px rgba(255,255,255,0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.2), inset 2px 2px 4px rgba(255, 255, 255, 0.3);
     }
-    
+
     .floating-coin.copper {
       background: radial-gradient(circle at 30% 30%, #FFE4B5, #E0B894, #C0A080);
       border: 2px solid #8B7355;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset -2px -2px 4px rgba(0,0,0,0.2), inset 2px 2px 4px rgba(255,255,255,0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(0, 0, 0, 0.2), inset 2px 2px 4px rgba(255, 255, 255, 0.3);
     }
-    
+
     @keyframes float {
       0% {
         transform: translateY(0) rotate(0deg);
         opacity: 0;
       }
+
       5% {
         opacity: 0.15;
       }
+
       95% {
         opacity: 0.15;
       }
+
       100% {
         transform: translateY(-100vh) rotate(360deg);
         opacity: 0;
       }
     }
-    
+
     .falling-coins-container {
       position: fixed;
       top: 0;
@@ -142,140 +146,132 @@
       pointer-events: none;
       z-index: 40;
     }
-    
+
     .falling-coin {
       position: absolute;
       font-size: 3rem;
       animation: fall 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
-    
+
     @keyframes fall {
       0% {
         transform: translateY(-100px) rotate(0deg);
         opacity: 1;
       }
+
       100% {
         transform: translateY(100vh) rotate(720deg);
         opacity: 0;
       }
     }
-    
+
     .coin {
       cursor: grab;
       transition: all 0.3s;
       user-select: none;
     }
-    
+
     .coin:active {
       cursor: grabbing;
       transform: scale(1.1);
     }
-    
+
     .coin:hover {
       transform: translateY(-5px);
       filter: brightness(1.1);
     }
-    
+
     .coin.moneda-usada {
       opacity: 0.3 !important;
       cursor: not-allowed !important;
       filter: grayscale(50%);
     }
-    
+
     .coin.moneda-usada:hover {
       transform: none !important;
       filter: grayscale(50%) !important;
     }
-    
+
     /* === CAMBIOS EN LAS MONEDAS DE 1 Y 2 EUROS === */
 
     .coin-1 {
       width: 70px;
       height: 70px;
       border-radius: 100%;
-      /* Imagen de 1 Euro */
       background-image: url('https://png.pngtree.com/png-vector/20230906/ourmid/pngtree-1-euro-coin-market-png-image_9203073.png');
       background-size: 130% 130%;
       background-position: center;
       background-repeat: no-repeat;
-      /* Eliminamos borde y fondo antiguo */
       border: none;
       background-color: transparent;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-
     }
-    
-    /* Ocultamos el texto y decoraciones antiguas */
-    .coin-1::before, .coin-1::after {
-        content: '1€';
+
+    .coin-1::before,
+    .coin-1::after {
+      content: '1€';
       display: none;
       content: none;
     }
-    
+
     .coin-2 {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      /* Imagen de 2 Euros */
       background-image: url('https://coin24.ee/wp-content/uploads/2024/06/img_2120-2-euro-2024-back-side-in-300-2-copy.png');
       background-size: 115% 115%;
       background-position: center;
       background-repeat: no-repeat;
-      /* Eliminamos borde y fondo antiguo */
       border: none;
       background-color: transparent;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
     }
-    
-    /* Ocultamos el texto y decoraciones antiguas */
-    .coin-2::before, .coin-2::after {
-        content: '2€';
+
+    .coin-2::before,
+    .coin-2::after {
+      content: '2€';
       display: none;
       content: none;
     }
 
-    /* === FIN CAMBIOS MONEDAS === */
-    
     .coin-50 {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      /* Imagen de 50 centimos */
       background-image: url('https://png.pngtree.com/png-clipart/20231010/original/pngtree-uncirculated-50-eurocent-new-map-european-picture-image_13108651.png');
       background-size: 110% 110%;
       background-position: center;
       background-repeat: no-repeat;
-      /* Eliminamos borde y fondo antiguo */
       border: none;
       background-color: transparent;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
     }
-    
+
     .coin-50::before {
-         content: '50¢';
-         content: none;
+      content: '50¢';
+      content: none;
       font-size: 18px;
       font-weight: 800;
       color: #654321;
-      text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4);
       z-index: 1;
     }
-    
+
     .coin-50::after {
       content: '';
       position: absolute;
@@ -284,37 +280,35 @@
       border-radius: 50%;
       border: 2px solid rgba(139, 115, 85, 0.3);
     }
-    
+
     .coin-20 {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      /* Imagen de 20 centimos */
       background-image: url('https://upload.wikimedia.org/wikipedia/de/1/1a/20_cent_coin_Eu_serie_1.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      /* Eliminamos borde y fondo antiguo */
       border: none;
       background-color: transparent;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
     }
-    
+
     .coin-20::before {
-        content: '20¢';
+      content: '20¢';
       font-size: 16px;
       font-weight: 800;
       color: #654321;
-      text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4);
       z-index: 1;
       content: none;
     }
-    
+
     .coin-20::after {
       content: '';
       position: absolute;
@@ -323,39 +317,36 @@
       border-radius: 50%;
       border: 2px solid rgba(139, 115, 85, 0.3);
     }
-    
+
     .coin-10 {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      /* Imagen de 10 Centimos */
       background-image: url('https://upload.wikimedia.org/wikipedia/lb/b/b3/10_Cent_%281999-2006%29.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       padding-left: -80px;
-      /* Eliminamos borde y fondo antiguo */
       border: none;
       background-color: transparent;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      
     }
-    
+
     .coin-10::before {
-        content: '10¢';
+      content: '10¢';
       font-size: 14px;
       font-weight: 800;
       color: #654321;
-      text-shadow: 1px 1px 1px rgba(255,255,255,0.4);
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.4);
       z-index: 1;
       content: none;
     }
-    
+
     .coin-10::after {
       content: '';
       position: absolute;
@@ -364,7 +355,7 @@
       border-radius: 50%;
       border: 2px solid rgba(139, 115, 85, 0.3);
     }
-    
+
     .drop-zone {
       min-height: 140px;
       border: 3px dashed #9333ea;
@@ -372,169 +363,192 @@
       background: rgba(147, 51, 234, 0.05);
       transition: all 0.3s;
     }
-    
+
     .drop-zone.drag-over {
       border-color: #10b981;
       background: rgba(16, 185, 129, 0.1);
       transform: scale(1.02);
     }
-    
+
     .shake {
       animation: shake 0.5s;
     }
-    
+
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-10px);
+      }
+
+      75% {
+        transform: translateX(10px);
+      }
     }
-    
+
     .celebrate {
       animation: celebrate 0.6s;
     }
-    
+
     @keyframes celebrate {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1) rotate(5deg); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1) rotate(5deg);
+      }
     }
   </style>
-  <style>@view-transition { navigation: auto; }</style>
- </head>
- <body class="h-full w-full overflow-auto m-0 p-0">
+  <style>
+    @view-transition {
+      navigation: auto;
+    }
+  </style>
+</head>
+
+<body class="h-full w-full overflow-auto m-0 p-0">
   <div class="floating-coins" id="floating-coins-bg"></div>
   <div class="falling-coins-container" id="falling-coins"></div>
-  <div class="h-full w-full" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><linearGradient id=%22sky%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23e8f4f8;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23b3d9e8;stop-opacity:1%22 /></linearGradient><linearGradient id=%22ground%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23d4a574;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23a0824d;stop-opacity:1%22 /></linearGradient></defs><rect width=%221200%22 height=%22500%22 fill=%22url(%23sky)%22 /><rect y=%22500%22 width=%221200%22 height=%22300%22 fill=%22url(%23ground)%22 /><rect x=%2250%22 y=%22200%22 width=%22350%22 height=%22350%22 fill=%22%238b4513%22 /><polygon points=%22230,200 50,280 400,280%22 fill=%22%23d2691e%22 /><rect x=%22100%22 y=%22300%22 width=%2250%22 height=%22150%22 fill=%22%234a4a4a%22 /><rect x=%22300%22 y=%22320%22 width=%2240%22 height=%22130%22 fill=%22%234a4a4a%22 /><rect x=%22150%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ff6b6b%22 /><circle cx=%22190%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22190%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22250%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ffd700%22 /><circle cx=%22290%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22290%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22500%22 y=%22250%22 width=%22300%22 height=%22300%22 fill=%22%23d4a574%22 /><polygon points=%22650,250 500,150 800,150%22 fill=%22%239b8b6f%22 /><rect x=%22540%22 y=%22310%22 width=%2240%22 height=%22190%22 fill=%22%232c3e50%22 /><rect x=%22740%22 y=%22320%22 width=%2240%22 height=%22180%22 fill=%22%232c3e50%22 /><rect x=%22550%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%23e74c3c%22 /><circle cx=%22585%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22585%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22650%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%233498db%22 /><circle cx=%22685%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22685%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22750%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%2227ae60%22 /><circle cx=%22785%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22785%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22900%22 y=%22280%22 width=%22250%22 height=%22270%22 fill=%22%23ecf0f1%22 /><polygon points=%221025,280 900,180 1150,180%22 fill=%22%23bdc3c7%22 /><rect x=%22930%22 y=%22350%22 width=%2360%22 height=%22160%22 fill=%22%232c3e50%22 /><rect x=%221050%22 y=%22360%22 width=%2260%22 height=%22150%22 fill=%22%232c3e50%22 /><rect x=%22940%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%23f39c12%22 /><circle cx=%22980%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22980%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><rect x=%221050%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%239b59b6%22 /><circle cx=%221090%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%221090%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22100%22 cy=%22100%22 r=%2230%22 fill=%22%23fffacd%22 opacity=%220.8%22 /><circle cx=%22150%22 cy=%2280%22 r=%2220%22 fill=%22%23ffffff%22 opacity=%220.6%22 /><circle cx=%221050%22 cy=%2290%22 r=%2225%22 fill=%22%23ffffff%22 opacity=%220.5%22 /></svg>') no-repeat center; background-attachment: fixed; background-size: cover; position: relative; z-index: 1;">
-   <div class="max-w-6xl mx-auto px-4 py-8">
-    <div id="pantalla-dificultad" class="hidden">
-     <div class="bg-white rounded-3xl shadow-2xl p-8">
-      <h1 id="titulo-principal" class="text-5xl font-bold text-center mb-2 text-purple-700">🪙 Juego de Monedas Euros 🪙</h1>
-      <p class="text-center text-gray-600 mb-8 text-lg">Selecciona el tipo de monedas</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-       <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 border-4 border-yellow-400 rounded-2xl p-8 cursor-pointer hover:shadow-2xl transition-all transform hover:scale-105" id="opcion-facil">
-        <div class="text-center">
-         <div class="text-6xl mb-4">
-          🟡
-         </div>
-         <h2 class="text-3xl font-bold text-yellow-800 mb-3">Modo Fácil</h2>
-         <p class="text-gray-700 mb-6 text-lg font-semibold">Solo Euros</p>
-         <div class="bg-white rounded-xl p-4 mb-6 space-y-2">
-          <p class="text-sm text-gray-600">Monedas disponibles:</p>
-          <div class="flex justify-center gap-2 text-2xl"><span title="1 Euro">🪙 1€</span> <span title="2 Euros">🪙 2€</span>
+  <div class="h-full w-full"
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><linearGradient id=%22sky%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23e8f4f8;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23b3d9e8;stop-opacity:1%22 /></linearGradient><linearGradient id=%22ground%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23d4a574;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23a0824d;stop-opacity:1%22 /></linearGradient></defs><rect width=%221200%22 height=%22500%22 fill=%22url(%23sky)%22 /><rect y=%22500%22 width=%221200%22 height=%22300%22 fill=%22url(%23ground)%22 /><rect x=%2250%22 y=%22200%22 width=%22350%22 height=%22350%22 fill=%22%238b4513%22 /><polygon points=%22230,200 50,280 400,280%22 fill=%22%23d2691e%22 /><rect x=%22100%22 y=%22300%22 width=%2250%22 height=%22150%22 fill=%22%234a4a4a%22 /><rect x=%22300%22 y=%22320%22 width=%2240%22 height=%22130%22 fill=%22%234a4a4a%22 /><rect x=%22150%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ff6b6b%22 /><circle cx=%22190%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22190%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22250%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ffd700%22 /><circle cx=%22290%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22290%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22500%22 y=%22250%22 width=%22300%22 height=%22300%22 fill=%22%23d4a574%22 /><polygon points=%22650,250 500,150 800,150%22 fill=%22%239b8b6f%22 /><rect x=%22540%22 y=%22310%22 width=%2240%22 height=%22190%22 fill=%22%232c3e50%22 /><rect x=%22740%22 y=%22320%22 width=%2240%22 height=%22180%22 fill=%22%232c3e50%22 /><rect x=%22550%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%23e74c3c%22 /><circle cx=%22585%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22585%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22650%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%233498db%22 /><circle cx=%22685%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22685%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22750%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%2327ae60%22 /><circle cx=%22785%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22785%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22900%22 y=%22280%22 width=%22250%22 height=%22270%22 fill=%22%23ecf0f1%22 /><polygon points=%221025,280 900,180 1150,180%22 fill=%22%23bdc3c7%22 /><rect x=%22930%22 y=%22350%22 width=%2260%22 height=%22160%22 fill=%22%232c3e50%22 /><rect x=%221050%22 y=%22360%22 width=%2260%22 height=%22150%22 fill=%22%232c3e50%22 /><rect x=%22940%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%23f39c12%22 /><circle cx=%22980%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22980%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><rect x=%221050%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%239b59b6%22 /><circle cx=%221090%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%221090%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22100%22 cy=%22100%22 r=%2230%22 fill=%22%23fffacd%22 opacity=%220.8%22 /><circle cx=%22150%22 cy=%2280%22 r=%2220%22 fill=%22%23ffffff%22 opacity=%220.6%22 /><circle cx=%221050%22 cy=%2290%22 r=%2225%22 fill=%22%23ffffff%22 opacity=%220.5%22 /></svg>') no-repeat center; background-attachment: fixed; background-size: cover; position: relative; z-index: 1;">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+      <div id="pantalla-jugadores">
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+          <h1 id="titulo-principal" class="text-5xl font-bold text-center mb-8 text-purple-700">🪙 Juego de Monedas
+            Euros 🪙</h1>
+          <div class="text-center mb-8"><button id="btn-nueva-partida"
+              class="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg transform hover:scale-105">
+              🎮 Iniciar Nueva Partida </button>
+            <p class="text-gray-600 mt-3">Selecciona los jugadores para comenzar</p>
+            <div id="continuar-partida-container" class="hidden mt-4"><button id="btn-continuar-partida"
+                class="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xl font-bold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg">
+                ▶️ Continuar Partida en Curso </button>
+            </div>
           </div>
-         </div>
-         <p class="text-gray-700">Perfecto para principiantes</p>
-        </div>
-       </div>
-       <div class="bg-gradient-to-br from-orange-50 to-orange-100 border-4 border-orange-400 rounded-2xl p-8 cursor-pointer hover:shadow-2xl transition-all transform hover:scale-105" id="opcion-dificil">
-        <div class="text-center">
-         <div class="text-6xl mb-4">
-          🔶
-         </div>
-         <h2 class="text-3xl font-bold text-orange-800 mb-3">Modo Desafiante</h2>
-         <p class="text-gray-700 mb-6 text-lg font-semibold">Euros + Céntimos</p>
-         <div class="bg-white rounded-xl p-4 mb-6 space-y-2">
-          <p class="text-sm text-gray-600">Monedas disponibles:</p>
-          <div class="flex justify-center gap-2 text-2xl flex-wrap"><span title="1 Euro">🪙 1€</span> <span title="2 Euros">🪙 2€</span> <span title="50 céntimos">💰 50¢</span> <span title="20 céntimos">💰 20¢</span> <span title="10 céntimos">💰 10¢</span>
+          <div id="panel-seleccion" class="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">✓ Selecciona Participantes y Dificultad</h2>
+            <p class="text-gray-600 mb-4">Haz clic en los jugadores y elige su nivel de dificultad (mínimo 2)</p>
+            <div id="lista-participantes" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            </div>
+            <div class="flex gap-3 justify-center"><button id="btn-confirmar-participantes"
+                class="px-8 py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                ▶ Comenzar Partida </button> <button id="btn-cancelar-seleccion"
+                class="px-8 py-3 bg-gray-500 text-white text-lg font-bold rounded-xl hover:bg-gray-600"> ✕ Cancelar
+              </button>
+            </div>
           </div>
-         </div>
-         <p class="text-gray-700">Para jugadores expertos</p>
+          <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">👥 Jugadores</h2>
+            <div id="lista-jugadores" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <p class="col-span-full text-center text-gray-500 py-8">No hay jugadores. ¡Crea el primero!</p>
+            </div>
+            <div class="border-t-2 border-purple-200 pt-6">
+              <h3 class="text-xl font-bold mb-4 text-gray-700">➕ Crear Nuevo Jugador</h3>
+              <form id="form-nuevo-jugador" class="flex gap-3"><label for="input-nombre" class="sr-only">Nombre del
+                  jugador</label> <input type="text" id="input-nombre" placeholder="Nombre del jugador"
+                  class="flex-1 px-4 py-3 text-lg border-2 border-purple-300 rounded-xl focus:outline-none focus:border-purple-500"
+                  maxlength="20" required> <button type="submit"
+                  class="px-6 py-3 bg-purple-600 text-white text-lg font-bold rounded-xl hover:bg-purple-700"> Crear
+                </button>
+              </form>
+            </div>
+          </div>
+          <div class="text-center"><button id="btn-borrar-todos"
+              class="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700"> 🗑️ Borrar Todos los
+              Jugadores </button>
+          </div>
         </div>
-       </div>
       </div>
-      <div class="text-center">
-       <p class="text-gray-600 mb-6">Elige una opción para ver los jugadores</p><button id="btn-volver-dificultad" class="px-6 py-3 bg-gray-500 text-white font-semibold rounded-xl hover:bg-gray-600"> ← Volver </button>
-      </div>
-     </div>
-    </div>
-    <div id="pantalla-jugadores">
-     <div class="bg-white rounded-3xl shadow-2xl p-8">
-      <h1 id="titulo-principal" class="text-5xl font-bold text-center mb-8 text-purple-700">🪙 Juego de Monedas Euros 🪙</h1>
-      <div class="text-center mb-8"><button id="btn-nueva-partida" class="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg transform hover:scale-105"> 🎮 Iniciar Nueva Partida </button>
-       <p class="text-gray-600 mt-3">Selecciona los jugadores para comenzar</p>
-       <div id="continuar-partida-container" class="hidden mt-4"><button id="btn-continuar-partida" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xl font-bold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg"> ▶️ Continuar Partida en Curso </button>
-       </div>
-      </div>
-      <div id="panel-seleccion" class="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-6">
-       <h2 class="text-2xl font-bold mb-4 text-gray-800">✓ Selecciona Participantes</h2>
-       <p class="text-gray-600 mb-4">Haz clic en los jugadores que participarán (mínimo 2)</p>
-       <div id="lista-participantes" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-       </div>
-       <div class="flex gap-3 justify-center"><button id="btn-confirmar-participantes" class="px-8 py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"> ▶ Comenzar Partida </button> <button id="btn-cancelar-seleccion" class="px-8 py-3 bg-gray-500 text-white text-lg font-bold rounded-xl hover:bg-gray-600"> ✕ Cancelar </button>
-       </div>
-      </div>
-      <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
-       <h2 class="text-2xl font-bold mb-4 text-gray-800">👥 Jugadores</h2>
-       <div id="lista-jugadores" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-        <p class="col-span-full text-center text-gray-500 py-8">No hay jugadores. ¡Crea el primero!</p>
-       </div>
-       <div class="border-t-2 border-purple-200 pt-6">
-        <h3 class="text-xl font-bold mb-4 text-gray-700">➕ Crear Nuevo Jugador</h3>
-        <form id="form-nuevo-jugador" class="flex gap-3"><label for="input-nombre" class="sr-only">Nombre del jugador</label> <input type="text" id="input-nombre" placeholder="Nombre del jugador" class="flex-1 px-4 py-3 text-lg border-2 border-purple-300 rounded-xl focus:outline-none focus:border-purple-500" maxlength="20" required> <button type="submit" class="px-6 py-3 bg-purple-600 text-white text-lg font-bold rounded-xl hover:bg-purple-700"> Crear </button>
-        </form>
-       </div>
-      </div>
-      <div class="text-center"><button id="btn-borrar-todos" class="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700"> 🗑️ Borrar Todos los Jugadores </button>
-      </div>
-     </div>
-    </div>
-    <div id="pantalla-estadisticas" class="hidden">
-     <div class="bg-white rounded-3xl shadow-2xl p-8">
-      <h1 class="text-4xl font-bold text-center mb-2 text-purple-700">🏆 Estadísticas de la Partida</h1>
-      <p class="text-center text-gray-600 mb-8">Resultados finales</p>
-      <div id="podio-ganadores" class="mb-8">
-      </div>
-      <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
-       <h3 class="text-2xl font-bold mb-4 text-gray-800">📊 Detalles Completos</h3>
-       <div id="tabla-estadisticas" class="space-y-3">
-       </div>
-      </div>
-      <div class="flex gap-3 justify-center"><button id="btn-nueva-partida-stats" class="px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg"> 🎮 Nueva Partida </button> <button id="btn-volver-inicio" class="px-8 py-4 bg-gray-600 text-white text-xl font-bold rounded-xl hover:bg-gray-700 shadow-lg"> 🏠 Volver al Inicio </button>
-      </div>
-     </div>
-    </div>
-    <div id="pantalla-juego" class="hidden">
-     <div class="bg-white rounded-3xl shadow-2xl p-6 mb-6">
-      <div class="flex justify-between items-center mb-6"><button id="btn-volver" class="px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 font-semibold"> ← Volver </button>
-       <div class="text-center">
-        <h2 id="nombre-jugador-actual" class="text-3xl font-bold text-purple-700"></h2>
-        <p class="text-gray-600">Nivel <span id="nivel-actual">1</span></p>
-        <div id="indicador-turno" class="mt-2 px-4 py-2 rounded-full inline-block font-semibold bg-green-200 text-green-800"><span id="texto-turno">Tu turno</span>
+      <div id="pantalla-estadisticas" class="hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-8">
+          <h1 class="text-4xl font-bold text-center mb-2 text-purple-700">🏆 Estadísticas de la Partida</h1>
+          <p class="text-center text-gray-600 mb-8">Resultados finales</p>
+          <div id="podio-ganadores" class="mb-8">
+          </div>
+          <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
+            <h3 class="text-2xl font-bold mb-4 text-gray-800">📊 Detalles Completos</h3>
+            <div id="tabla-estadisticas" class="space-y-3">
+            </div>
+          </div>
+          <div class="flex gap-3 justify-center"><button id="btn-nueva-partida-stats"
+              class="px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg"> 🎮
+              Nueva Partida </button> <button id="btn-volver-inicio"
+              class="px-8 py-4 bg-gray-600 text-white text-xl font-bold rounded-xl hover:bg-gray-700 shadow-lg"> 🏠
+              Volver al Inicio </button>
+          </div>
         </div>
-       </div>
-       <div class="text-right">
-        <p class="text-2xl font-bold text-yellow-600">⭐ <span id="puntos-actuales">0</span></p>
-        <p class="text-sm text-gray-600">puntos</p>
-       </div>
       </div>
-      <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6">
-       <p id="texto-instrucciones" class="text-center text-xl text-gray-700 mb-6 font-semibold">Arrastra las monedas para formar la cantidad indicada</p>
-       <div class="text-center mb-6">
-        <p class="text-4xl font-bold text-purple-700 mb-2">Forma: <span id="cantidad-objetivo" class="text-green-600">5€</span></p>
-        <p class="text-2xl text-gray-700">Tu suma: <span id="suma-actual" class="font-bold text-blue-600">0€</span></p>
-        <p class="text-sm text-gray-600 mt-2">Intentos: <span id="contador-intentos" class="font-semibold">0</span></p>
-       </div>
-       <div class="mb-6">
-        <h3 class="text-lg font-bold mb-3 text-gray-700">Monedas disponibles:</h3>
-        <div id="area-monedas" class="flex flex-wrap gap-4 justify-center p-4 bg-white rounded-xl min-h-[120px]">
+      <div id="pantalla-juego" class="hidden">
+        <div class="bg-white rounded-3xl shadow-2xl p-6 mb-6">
+          <div class="flex justify-between items-center mb-6"><button id="btn-volver"
+              class="px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 font-semibold"> ← Volver </button>
+            <div class="text-center">
+              <h2 id="nombre-jugador-actual" class="text-3xl font-bold text-purple-700"></h2>
+              <p class="text-gray-600">Nivel <span id="nivel-actual">1</span> | <span id="dificultad-jugador"
+                  class="font-semibold"></span></p>
+              <div id="indicador-turno"
+                class="mt-2 px-4 py-2 rounded-full inline-block font-semibold bg-green-200 text-green-800"><span
+                  id="texto-turno">Tu turno</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="text-2xl font-bold text-yellow-600">⭐ <span id="puntos-actuales">0</span></p>
+              <p class="text-sm text-gray-600">puntos</p>
+            </div>
+          </div>
+          <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6">
+            <p id="texto-instrucciones" class="text-center text-xl text-gray-700 mb-6 font-semibold">Arrastra las
+              monedas para formar la cantidad indicada</p>
+            <div class="text-center mb-6">
+              <p class="text-4xl font-bold text-purple-700 mb-2">Forma: <span id="cantidad-objetivo"
+                  class="text-green-600">5€</span></p>
+              <p class="text-2xl text-gray-700">Tu suma: <span id="suma-actual"
+                  class="font-bold text-blue-600">0€</span></p>
+              <p class="text-sm text-gray-600 mt-2">Intentos: <span id="contador-intentos"
+                  class="font-semibold">0</span></p>
+            </div>
+            <div class="mb-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-700">Monedas disponibles:</h3>
+              <div id="area-monedas" class="flex flex-wrap gap-4 justify-center p-4 bg-white rounded-xl min-h-[120px]">
+              </div>
+            </div>
+            <div class="mb-6">
+              <h3 class="text-lg font-bold mb-3 text-gray-700">Tu combinación:</h3>
+              <div id="zona-soltar" class="drop-zone flex flex-wrap gap-4 justify-center p-6">
+                <p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>
+              </div>
+            </div>
+            <div class="flex gap-3"><button id="btn-comprobar"
+                class="flex-1 px-6 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg">
+                ✓ Comprobar </button> <button id="btn-reintentar"
+                class="px-6 py-4 bg-orange-600 text-white text-xl font-bold rounded-xl hover:bg-orange-700 shadow-lg">
+                🔄 Reintentar </button> <button id="btn-pista"
+                class="px-6 py-4 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg"> 💡
+                Pista </button>
+            </div>
+            <div class="mt-4 text-center flex gap-3 justify-center"><button id="btn-pasar-turno"
+                class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700"> ⏩ Pasar Turno
+              </button> <button id="btn-terminar-partida"
+                class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700"> 🏁 Terminar
+                Partida </button>
+            </div>
+          </div>
         </div>
-       </div>
-       <div class="mb-6">
-        <h3 class="text-lg font-bold mb-3 text-gray-700">Tu combinación:</h3>
-        <div id="zona-soltar" class="drop-zone flex flex-wrap gap-4 justify-center p-6">
-         <p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>
+        <div id="mensaje-feedback" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
+          <p id="texto-feedback" class="text-4xl font-bold mb-6"></p><button id="btn-siguiente-nivel"
+            class="px-10 py-4 bg-purple-600 text-white text-xl font-bold rounded-xl hover:bg-purple-700"> Siguiente
+            Nivel → </button>
         </div>
-       </div>
-       <div class="flex gap-3"><button id="btn-comprobar" class="flex-1 px-6 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg"> ✓ Comprobar </button> <button id="btn-reintentar" class="px-6 py-4 bg-orange-600 text-white text-xl font-bold rounded-xl hover:bg-orange-700 shadow-lg"> 🔄 Reintentar </button> <button id="btn-pista" class="px-6 py-4 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg"> 💡 Pista </button>
-       </div>
-       <div class="mt-4 text-center flex gap-3 justify-center"><button id="btn-pasar-turno" class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700"> ⏩ Pasar Turno </button> <button id="btn-terminar-partida" class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700"> 🏁 Terminar Partida </button>
-       </div>
       </div>
-     </div>
-     <div id="mensaje-feedback" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
-      <p id="texto-feedback" class="text-4xl font-bold mb-6"></p><button id="btn-siguiente-nivel" class="px-10 py-4 bg-purple-600 text-white text-xl font-bold rounded-xl hover:bg-purple-700"> Siguiente Nivel → </button>
-     </div>
     </div>
-   </div>
   </div>
   <script>
     const defaultConfig = {
@@ -542,16 +556,17 @@
       texto_instruccion: "Arrastra las monedas para formar la cantidad indicada",
       mensaje_exito: "¡Excelente trabajo!"
     };
-    
+
     const NIVELES = [
       { cantidad: 3 }, { cantidad: 5 }, { cantidad: 7 }, { cantidad: 4 },
       { cantidad: 6 }, { cantidad: 8 }, { cantidad: 9 }, { cantidad: 10 }
     ];
-    
+
     let todosJugadores = [];
     let jugadorActual = null;
     let jugadoresPartida = [];
     let participantesSeleccionados = [];
+    let dificultadesSeleccionadas = {}; // Nuevo: almacena la dificultad de cada jugador
     let partidaActualId = null;
     let nivelActual = 1;
     let objetivoActualCent = 0;
@@ -559,8 +574,8 @@
     let intentos = 0;
     let monedasSoltadas = [];
     let monedaArrastrada = null;
-    let dificultadJuego = 'facil';
-    
+    let dificultadJuego = 'facil'; // Ahora se usará la dificultad individual del jugador
+
     function hablar(texto) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -571,42 +586,42 @@
         window.speechSynthesis.speak(utterance);
       }
     }
-    
+
     function reproducirSonidoMonedas() {
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      
+
       const sonidos = [
         { frecuencia: 800, duracion: 0.1, retraso: 0 },
         { frecuencia: 600, duracion: 0.15, retraso: 0.1 },
         { frecuencia: 500, duracion: 0.2, retraso: 0.3 }
       ];
-      
+
       sonidos.forEach(({ frecuencia, duracion, retraso }) => {
         setTimeout(() => {
           const oscillator = audioContext.createOscillator();
           const gainNode = audioContext.createGain();
-          
+
           oscillator.connect(gainNode);
           gainNode.connect(audioContext.destination);
-          
+
           oscillator.frequency.value = frecuencia;
           oscillator.type = 'sine';
-          
+
           gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
           gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duracion);
-          
+
           oscillator.start(audioContext.currentTime);
           oscillator.stop(audioContext.currentTime + duracion);
         }, retraso * 1000);
       });
     }
-    
+
     function crearMonedasCayendo() {
       const container = document.getElementById('falling-coins');
       container.innerHTML = '';
-      
+
       const monedas = ['🪙', '💰', '🪙', '💰', '🪙'];
-      
+
       monedas.forEach((moneda, index) => {
         setTimeout(() => {
           const div = document.createElement('div');
@@ -614,23 +629,23 @@
           div.textContent = moneda;
           div.style.left = Math.random() * 80 + 10 + '%';
           div.style.top = '-100px';
-          
+
           container.appendChild(div);
-          
+
           setTimeout(() => div.remove(), 2000);
         }, index * 200);
       });
     }
-    
+
     function mostrarToast(mensaje) {
       const toast = document.createElement('div');
       toast.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg z-50';
       toast.textContent = mensaje;
       document.body.appendChild(toast);
-      
+
       setTimeout(() => toast.remove(), 3000);
     }
-    
+
     function mostrarModal(html) {
       const modal = document.createElement('div');
       modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
@@ -638,12 +653,12 @@
       document.body.appendChild(modal);
       return modal;
     }
-    
+
     const dataHandler = {
       onDataChanged(data) {
         todosJugadores = data;
         renderizarListaJugadores();
-        
+
         if (jugadorActual) {
           const jugadorActualizado = todosJugadores.find(j => j._backendId === jugadorActual._backendId);
           if (jugadorActualizado) {
@@ -653,15 +668,15 @@
         }
       }
     };
-    
+
     function renderizarListaJugadores() {
       const lista = document.getElementById('lista-jugadores');
-      
+
       if (todosJugadores.length === 0) {
         lista.innerHTML = '<p class="col-span-full text-center text-gray-500 py-8">No hay jugadores. ¡Crea el primero!</p>';
         return;
       }
-      
+
       lista.innerHTML = todosJugadores
         .sort((a, b) => b.puntos_totales - a.puntos_totales)
         .map(jugador => `
@@ -674,24 +689,24 @@
             </div>
           </div>
         `).join('');
-      
+
       verificarPartidaActiva();
     }
-    
+
     function verificarPartidaActiva() {
       const jugadoresConPartida = todosJugadores.filter(j => j.partida_id && j.partida_id !== '');
       const container = document.getElementById('continuar-partida-container');
-      
+
       if (jugadoresConPartida.length > 0) {
         container.classList.remove('hidden');
       } else {
         container.classList.add('hidden');
       }
     }
-    
+
     function continuarPartidaActiva() {
       const jugadorConTurno = todosJugadores.find(j => j.turno_activo && j.partida_id);
-      
+
       if (jugadorConTurno) {
         irAlJuego(jugadorConTurno.__backendId);
       } else {
@@ -701,71 +716,114 @@
         }
       }
     }
-    
+
     function escaparHTML(texto) {
       const div = document.createElement('div');
       div.textContent = texto;
       return div.innerHTML;
     }
-    
+
     function renderizarSeleccionParticipantes() {
       const lista = document.getElementById('lista-participantes');
-      
+
       lista.innerHTML = todosJugadores.map(jugador => {
         const seleccionado = participantesSeleccionados.includes(jugador.__backendId);
+        const dificultadActual = dificultadesSeleccionadas[jugador.__backendId] || 'facil';
+
         return `
-          <div class="bg-white border-2 ${seleccionado ? 'border-green-500 bg-green-50' : 'border-gray-300'} rounded-xl p-3 cursor-pointer hover:shadow-lg transition-all" data-jugador-id="${jugador.__backendId}">
-            <div class="flex justify-between items-center mb-1">
+          <div class="bg-white border-2 ${seleccionado ? 'border-green-500 bg-green-50' : 'border-gray-300'} rounded-xl p-3 transition-all">
+            <div class="flex justify-between items-center mb-2">
               <h4 class="font-bold ${seleccionado ? 'text-green-700' : 'text-gray-700'}">${escaparHTML(jugador.nombre)}</h4>
               ${seleccionado ? '<span class="text-xl">✓</span>' : ''}
             </div>
-            <p class="text-xs text-gray-600">⭐ ${jugador.puntos_totales} pts</p>
+            <p class="text-xs text-gray-600 mb-2">⭐ ${jugador.puntos_totales} pts</p>
+            
+            ${seleccionado ? `
+              <div class="mt-2 space-y-2">
+                <label class="text-xs font-semibold text-gray-700 block">Dificultad:</label>
+                <div class="flex gap-2">
+                  <button 
+                    class="flex-1 py-1 px-2 text-xs rounded ${dificultadActual === 'facil' ? 'bg-yellow-500 text-white font-bold' : 'bg-gray-200 text-gray-700'}" 
+                    onclick="cambiarDificultadJugador('${jugador.__backendId}', 'facil')"
+                  >
+                    🟡 Fácil<br><span class="text-[10px]">1€ 2€</span>
+                  </button>
+                  <button 
+                    class="flex-1 py-1 px-2 text-xs rounded ${dificultadActual === 'dificil' ? 'bg-orange-500 text-white font-bold' : 'bg-gray-200 text-gray-700'}" 
+                    onclick="cambiarDificultadJugador('${jugador.__backendId}', 'dificil')"
+                  >
+                    🔶 Difícil<br><span class="text-[10px]">+ céntimos</span>
+                  </button>
+                </div>
+              </div>
+            ` : `
+              <button 
+                class="w-full py-2 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 font-semibold" 
+                onclick="toggleParticipante('${jugador.__backendId}')"
+              >
+                Seleccionar
+              </button>
+            `}
+            
+            ${seleccionado ? `
+              <button 
+                class="w-full mt-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600" 
+                onclick="toggleParticipante('${jugador.__backendId}')"
+              >
+                Quitar
+              </button>
+            ` : ''}
           </div>
         `;
       }).join('');
-      
-      lista.querySelectorAll('[data-jugador-id]').forEach(card => {
-        card.addEventListener('click', () => {
-          const id = card.dataset.jugadorId;
-          const index = participantesSeleccionados.indexOf(id);
-          
-          if (index > -1) {
-            participantesSeleccionados.splice(index, 1);
-          } else {
-            participantesSeleccionados.push(id);
-          }
-          
-          renderizarSeleccionParticipantes();
-          actualizarBotonConfirmar();
-        });
-      });
     }
-    
+
+    window.toggleParticipante = function (jugadorId) {
+      const index = participantesSeleccionados.indexOf(jugadorId);
+
+      if (index > -1) {
+        participantesSeleccionados.splice(index, 1);
+        delete dificultadesSeleccionadas[jugadorId];
+      } else {
+        participantesSeleccionados.push(jugadorId);
+        dificultadesSeleccionadas[jugadorId] = 'facil'; // Dificultad por defecto
+      }
+
+      renderizarSeleccionParticipantes();
+      actualizarBotonConfirmar();
+    };
+
+    window.cambiarDificultadJugador = function (jugadorId, dificultad) {
+      dificultadesSeleccionadas[jugadorId] = dificultad;
+      renderizarSeleccionParticipantes();
+    };
+
     function actualizarBotonConfirmar() {
       const boton = document.getElementById('btn-confirmar-participantes');
       boton.disabled = participantesSeleccionados.length < 2;
-      boton.textContent = participantesSeleccionados.length < 2 
-        ? '⚠ Selecciona al menos 2 jugadores' 
+      boton.textContent = participantesSeleccionados.length < 2
+        ? '⚠ Selecciona al menos 2 jugadores'
         : `▶ Comenzar (${participantesSeleccionados.length} jugadores)`;
     }
-    
+
     async function iniciarPartida() {
       if (participantesSeleccionados.length < 2) {
         mostrarToast('⚠ Selecciona al menos 2 jugadores');
         return;
       }
-      
+
       const boton = document.getElementById('btn-confirmar-participantes');
       boton.disabled = true;
       boton.textContent = 'Iniciando...';
-      
+
       try {
         partidaActualId = 'partida_' + Date.now();
-        
+
         for (let i = 0; i < participantesSeleccionados.length; i++) {
           const jugadorId = participantesSeleccionados[i];
           const jugador = todosJugadores.find(j => j.__backendId === jugadorId);
-          
+          const dificultadPersonal = dificultadesSeleccionadas[jugadorId] || 'facil';
+
           if (jugador) {
             await window.dataSdk.update({
               ...jugador,
@@ -773,25 +831,24 @@
               orden_turno: i,
               turno_activo: i === 0,
               nivel_actual: 1,
-              dificultad_partida: dificultadJuego
+              dificultad_partida: dificultadPersonal // Ahora cada jugador tiene su propia dificultad
             });
           }
         }
-        
+
         hablar('Partida iniciada');
         mostrarToast(`🎮 Partida iniciada`);
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        document.getElementById('pantalla-dificultad').classList.add('hidden');
+
         document.getElementById('pantalla-jugadores').classList.add('hidden');
         document.getElementById('panel-seleccion').classList.add('hidden');
         document.getElementById('pantalla-estadisticas').classList.add('hidden');
         document.getElementById('pantalla-juego').classList.remove('hidden');
-        
+
         const primerJugadorId = participantesSeleccionados[0];
         const primerJugador = todosJugadores.find(j => j.__backendId === primerJugadorId);
-        
+
         if (primerJugador) {
           irAlJuego(primerJugadorId);
         } else {
@@ -806,43 +863,47 @@
         boton.textContent = '▶ Comenzar Partida';
       }
     }
-    
+
     function irAlJuego(jugadorId) {
       const jugador = todosJugadores.find(j => j.__backendId === jugadorId);
       if (!jugador) return;
-      
+
       jugadorActual = jugador;
       nivelActual = jugador.nivel_actual;
-      
-      // Recuperar la dificultad guardada en la partida
+
+      // Usar la dificultad personal del jugador
       if (jugador.dificultad_partida) {
         dificultadJuego = jugador.dificultad_partida;
       }
-      
+
       jugadoresPartida = todosJugadores
         .filter(j => j.partida_id === jugador.partida_id)
         .sort((a, b) => a.orden_turno - b.orden_turno);
-      
+
       document.getElementById('pantalla-jugadores').classList.add('hidden');
       document.getElementById('pantalla-juego').classList.remove('hidden');
       document.getElementById('nombre-jugador-actual').textContent = jugador.nombre;
       document.getElementById('puntos-actuales').textContent = jugador.puntos_totales;
-      
+
+      // Mostrar la dificultad del jugador
+      const dificultadTexto = dificultadJuego === 'facil' ? '🟡 Modo Fácil' : '🔶 Modo Difícil';
+      document.getElementById('dificultad-jugador').textContent = dificultadTexto;
+
       if (jugador.turno_activo) {
         hablar(`Hola ${jugador.nombre}, es tu turno`);
       }
-      
+
       actualizarEstadoTurno();
       iniciarNivel(nivelActual);
     }
-    
+
     function actualizarEstadoTurno() {
       const indicador = document.getElementById('indicador-turno');
       const texto = document.getElementById('texto-turno');
       const btnComprobar = document.getElementById('btn-comprobar');
       const btnReintentar = document.getElementById('btn-reintentar');
       const btnPista = document.getElementById('btn-pista');
-      
+
       if (jugadorActual.turno_activo) {
         indicador.className = 'mt-2 px-4 py-2 rounded-full inline-block font-semibold bg-green-200 text-green-800 animate-pulse';
         texto.textContent = '✓ Tu turno';
@@ -857,34 +918,34 @@
         btnPista.disabled = true;
       }
     }
-    
+
     async function pasarTurno() {
       if (jugadoresPartida.length === 0) return;
-      
+
       const indiceActual = jugadoresPartida.findIndex(j => j._backendId === jugadorActual._backendId);
       const siguienteIndice = (indiceActual + 1) % jugadoresPartida.length;
       const siguienteJugador = jugadoresPartida[siguienteIndice];
-      
+
       await window.dataSdk.update({
         ...jugadorActual,
         turno_activo: false
       });
-      
+
       await window.dataSdk.update({
         ...siguienteJugador,
         turno_activo: true
       });
-      
+
       limpiarRespuesta();
-      
+
       setTimeout(() => {
         irAlJuego(siguienteJugador.__backendId);
       }, 500);
-      
+
       mostrarToast(`🎯 Turno de ${siguienteJugador.nombre}`);
       hablar(`Turno de ${siguienteJugador.nombre}`);
     }
-    
+
     async function terminarPartida() {
       for (const jugador of jugadoresPartida) {
         await window.dataSdk.update({
@@ -895,53 +956,52 @@
           dificultad_partida: ''
         });
       }
-      
-      // Resetear el botón
+
       const boton = document.getElementById('btn-terminar-partida');
       if (boton) {
         boton.disabled = false;
         boton.textContent = '🏁 Terminar Partida';
       }
-      
+
       mostrarEstadisticas();
     }
-    
+
     function mostrarEstadisticas() {
       const ranking = [...jugadoresPartida].sort((a, b) => b.puntos_totales - a.puntos_totales);
-      
+
       document.getElementById('pantalla-juego').classList.add('hidden');
       document.getElementById('pantalla-estadisticas').classList.remove('hidden');
-      
+
       renderizarPodio(ranking);
-      
+
       renderizarTablaEstadisticas(ranking);
-      
+
       if (ranking.length > 0) {
         hablar(`El ganador es ${ranking[0].nombre} con ${ranking[0].puntos_totales} puntos`);
       }
     }
-    
+
     function renderizarPodio(ranking) {
       const podio = document.getElementById('podio-ganadores');
-      
+
       if (ranking.length === 0) {
         podio.innerHTML = '<p class="text-center text-gray-500">No hay datos</p>';
         return;
       }
-      
+
       const medallasColores = [
         { bg: 'bg-yellow-400', text: 'text-yellow-900', emoji: '🥇', lugar: '1º' },
         { bg: 'bg-gray-300', text: 'text-gray-900', emoji: '🥈', lugar: '2º' },
         { bg: 'bg-orange-400', text: 'text-orange-900', emoji: '🥉', lugar: '3º' }
       ];
-      
+
       const top3 = ranking.slice(0, 3);
-      
+
       podio.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           ${top3.map((jugador, index) => {
-            const medalla = medallasColores[index];
-            return `
+        const medalla = medallasColores[index];
+        return `
               <div class="relative ${medalla.bg} rounded-2xl p-6 shadow-xl transform ${index === 0 ? 'md:scale-110' : ''}">
                 <div class="text-center">
                   <div class="text-6xl mb-3">${medalla.emoji}</div>
@@ -954,14 +1014,14 @@
                 </div>
               </div>
             `;
-          }).join('')}
+      }).join('')}
         </div>
       `;
     }
-    
+
     function renderizarTablaEstadisticas(ranking) {
       const tabla = document.getElementById('tabla-estadisticas');
-      
+
       tabla.innerHTML = ranking.map((jugador, index) => `
         <div class="bg-white rounded-xl p-4 flex justify-between items-center shadow hover:shadow-lg transition-all">
           <div class="flex items-center gap-4">
@@ -981,7 +1041,7 @@
         </div>
       `).join('');
     }
-    
+
     function calcularEficiencia(jugador) {
       if (jugador.intentos_totales === 0) return '0%';
       const nivelBase = jugador.nivel_actual - 1;
@@ -989,15 +1049,14 @@
       const eficiencia = intentosIdeales > 0 ? Math.round((intentosIdeales / jugador.intentos_totales) * 100) : 100;
       return Math.min(eficiencia, 100) + '%';
     }
-    
+
     function limpiarRespuesta() {
       monedasSoltadas = [];
       sumaActualCent = 0;
       document.getElementById('suma-actual').textContent = '0.00€';
       zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
       document.getElementById('mensaje-feedback').classList.add('hidden');
-      
-      // Reactivar todas las monedas
+
       const todasLasMonedas = document.querySelectorAll('#area-monedas .coin');
       todasLasMonedas.forEach(moneda => {
         moneda.classList.remove('moneda-usada');
@@ -1005,7 +1064,7 @@
         moneda.style.cursor = 'grab';
       });
     }
-    
+
     function iniciarNivel(nivel) {
       let cantidadAleatoria;
       if (dificultadJuego === 'facil') {
@@ -1013,7 +1072,7 @@
       } else {
         cantidadAleatoria = Math.round((Math.random() * 9.9 + 0.1) * 10) / 10;
       }
-      
+
       objetivoActualCent = Math.round(cantidadAleatoria * 100);
 
       document.getElementById('cantidad-objetivo').textContent =
@@ -1022,29 +1081,29 @@
       sumaActualCent = 0;
       intentos = 0;
       monedasSoltadas = [];
-      
+
       document.getElementById('nivel-actual').textContent = nivel;
       document.getElementById('suma-actual').textContent = '0.00€';
       document.getElementById('contador-intentos').textContent = '0';
       document.getElementById('mensaje-feedback').classList.add('hidden');
-      
+
       generarMonedas();
     }
-    
+
     function generarMonedas() {
       const area = document.getElementById('area-monedas');
       area.innerHTML = '';
-      
+
       if (dificultadJuego === 'facil') {
         for (let i = 0; i < 8; i++) {
-          area.appendChild(crearMoneda(100, `m1-${i}`)); 
+          area.appendChild(crearMoneda(100, `m1-${i}`));
         }
         for (let i = 0; i < 6; i++) {
           area.appendChild(crearMoneda(200, `m2-${i}`));
         }
       } else {
         for (let i = 0; i < 6; i++) {
-          area.appendChild(crearMoneda(100, `m1-${i}`)); 
+          area.appendChild(crearMoneda(100, `m1-${i}`));
         }
         for (let i = 0; i < 5; i++) {
           area.appendChild(crearMoneda(200, `m2-${i}`));
@@ -1053,133 +1112,160 @@
           area.appendChild(crearMoneda(50, `m50-${i}`));
         }
         for (let i = 0; i < 10; i++) {
-          area.appendChild(crearMoneda(20, `m50-${i}`));
+          area.appendChild(crearMoneda(20, `m20-${i}`));
         }
         for (let i = 0; i < 12; i++) {
           area.appendChild(crearMoneda(10, `m10-${i}`));
         }
       }
     }
-    
+
     function crearMoneda(valorCent, id) {
-  const moneda = document.createElement('div');
-  moneda.classList.add('coin');
-  moneda.draggable = true;
+      const moneda = document.createElement('div');
+      moneda.classList.add('coin');
+      moneda.draggable = true;
 
-  moneda.dataset.valor = valorCent;
-  moneda.dataset.id = id;
+      moneda.dataset.valor = valorCent;
+      moneda.dataset.id = id;
 
-  let etiqueta = '';
-  let claseMoneda = '';
+      let etiqueta = '';
+      let claseMoneda = '';
 
-  switch (valorCent) {
-    case 200:
-      etiqueta = '2€';
-      claseMoneda = 'coin-2';
-      break;
-    case 100:
-      etiqueta = '1€';
-      claseMoneda = 'coin-1';
-      break;
-    case 50:
-      etiqueta = '50¢';
-      claseMoneda = 'coin-50';
-      break;
-    case 20:
-      etiqueta = '20¢';
-      claseMoneda = 'coin-20';
-      break;
-    case 10:
-      etiqueta = '10¢';
-      claseMoneda = 'coin-10';
-      break;
-  }
+      switch (valorCent) {
+        case 200:
+          etiqueta = '2€';
+          claseMoneda = 'coin-2';
+          break;
+        case 100:
+          etiqueta = '1€';
+          claseMoneda = 'coin-1';
+          break;
+        case 50:
+          etiqueta = '50¢';
+          claseMoneda = 'coin-50';
+          break;
+        case 20:
+          etiqueta = '20¢';
+          claseMoneda = 'coin-20';
+          break;
+        case 10:
+          etiqueta = '10¢';
+          claseMoneda = 'coin-10';
+          break;
+      }
 
-  moneda.classList.add(claseMoneda);
-  moneda.dataset.etiqueta = etiqueta;
-  moneda.setAttribute('aria-label', etiqueta);
+      moneda.classList.add(claseMoneda);
+      moneda.dataset.etiqueta = etiqueta;
+      moneda.setAttribute('aria-label', etiqueta);
 
-  moneda.addEventListener('dragstart', e => {
-    // Verificar si la moneda ya fue usada
-    if (e.target.classList.contains('moneda-usada')) {
-      e.preventDefault();
-      return;
+      moneda.addEventListener('dragstart', e => {
+        if (e.target.classList.contains('moneda-usada')) {
+          e.preventDefault();
+          return;
+        }
+        monedaArrastrada = e.target;
+        e.target.style.opacity = '0.5';
+      });
+
+      moneda.addEventListener('dragend', e => {
+        e.target.style.opacity = '1';
+        monedaArrastrada = null;
+      });
+
+      moneda.addEventListener('click', () => {
+        if (moneda.classList.contains('moneda-usada')) return;
+
+        const valorCent = parseInt(moneda.dataset.valor, 10);
+
+        if (monedasSoltadas.some(m => m.id === id)) return;
+
+        sumaActualCent += valorCent;
+
+        moneda.classList.add('moneda-usada');
+        moneda.style.opacity = '0.3';
+        moneda.style.cursor = 'not-allowed';
+
+        const nuevaMoneda = crearMoneda(valorCent, id);
+        nuevaMoneda.style.cursor = 'pointer';
+        nuevaMoneda.title = 'Click para quitar';
+        nuevaMoneda.draggable = false;
+
+        nuevaMoneda.addEventListener('click', () => quitarMoneda(id));
+
+        const placeholder = zonaSoltar.querySelector('p');
+        if (placeholder) placeholder.remove();
+
+        zonaSoltar.appendChild(nuevaMoneda);
+        monedasSoltadas.push({ id, valorCent });
+
+        document.getElementById('suma-actual').textContent =
+          (sumaActualCent / 100).toFixed(2) + '€';
+
+        if (sumaActualCent <= objetivoActualCent) {
+          const mensajes = [
+            '¡Bien!', '¡Excelente!', '¡Muy bien!', '¡Genial!', '¡Perfecto!',
+            '¡Sigue así!', '¡Vas bien!', '¡Buen trabajo!'
+          ];
+          hablar(mensajes[Math.floor(Math.random() * mensajes.length)]);
+        } else {
+          hablar('Cuidado, es demasiado');
+        }
+      });
+
+
+      return moneda;
     }
-    monedaArrastrada = e.target;
-    e.target.style.opacity = '0.5';
-  });
 
-  moneda.addEventListener('dragend', e => {
-    e.target.style.opacity = '1';
-    monedaArrastrada = null;
-  });
 
-  return moneda;
-}
-
-    
     const zonaSoltar = document.getElementById('zona-soltar');
-    
+
     zonaSoltar.addEventListener('dragover', (e) => {
       e.preventDefault();
       zonaSoltar.classList.add('drag-over');
     });
-    
+
     zonaSoltar.addEventListener('dragleave', () => {
       zonaSoltar.classList.remove('drag-over');
     });
-    
+
     zonaSoltar.addEventListener('drop', (e) => {
       e.preventDefault();
       zonaSoltar.classList.remove('drag-over');
-      
+
       if (!monedaArrastrada) return;
-      
+
       const valorCent = parseInt(monedaArrastrada.dataset.valor, 10);
       sumaActualCent += valorCent;
       const id = monedaArrastrada.dataset.id;
-      
+
       if (monedasSoltadas.some(m => m.id === id)) return;
-      
-      // Marcar la moneda original como usada
+
       monedaArrastrada.classList.add('moneda-usada');
       monedaArrastrada.style.opacity = '0.3';
       monedaArrastrada.style.cursor = 'not-allowed';
-      
+
       const nuevaMoneda = crearMoneda(valorCent, id);
       nuevaMoneda.style.cursor = 'pointer';
       nuevaMoneda.title = 'Click para quitar';
       nuevaMoneda.style.opacity = '1';
-nuevaMoneda.draggable = false;
+      nuevaMoneda.draggable = false;
 
       nuevaMoneda.addEventListener('click', () => quitarMoneda(id));
-      
+
       const placeholder = zonaSoltar.querySelector('p');
       if (placeholder) placeholder.remove();
-      
+
       zonaSoltar.appendChild(nuevaMoneda);
       monedasSoltadas.push({ id, valorCent });
-      
+
       document.getElementById('suma-actual').textContent =
-  (sumaActualCent / 100).toFixed(2) + '€';
-      
+        (sumaActualCent / 100).toFixed(2) + '€';
+
       if (sumaActualCent <= objetivoActualCent) {
-        // Array de mensajes positivos aleatorios
         const mensajesPositivos = [
-          '¡Bien!',
-          '¡Excelente!',
-          '¡Muy bien!',
-          '¡Genial!',
-          '¡Perfecto!',
-          '¡Sigue así!',
-          '¡Vas bien!',
-          '¡Buen trabajo!',
-          '¡Fantástico!',
-          '¡Increíble!',
-          '¡Estupendo!',
-          '¡Bravo!',
-          '¡Lo estás haciendo bien!',
-          '¡Magnífico!'
+          '¡Bien!', '¡Excelente!', '¡Muy bien!', '¡Genial!', '¡Perfecto!',
+          '¡Sigue así!', '¡Vas bien!', '¡Buen trabajo!', '¡Fantástico!',
+          '¡Increíble!', '¡Estupendo!', '¡Bravo!', '¡Lo estás haciendo bien!', '¡Magnífico!'
         ];
         const mensajeAleatorio = mensajesPositivos[Math.floor(Math.random() * mensajesPositivos.length)];
         hablar(mensajeAleatorio);
@@ -1187,54 +1273,53 @@ nuevaMoneda.draggable = false;
         hablar('Cuidado, es demasiado');
       }
     });
-    
+
     function quitarMoneda(id) {
       const moneda = monedasSoltadas.find(m => m.id === id);
       if (!moneda) return;
-      
+
       sumaActualCent -= moneda.valorCent;
 
-document.getElementById('suma-actual').textContent =
-  (sumaActualCent / 100).toFixed(2) + '€';
-      
+      document.getElementById('suma-actual').textContent =
+        (sumaActualCent / 100).toFixed(2) + '€';
+
       monedasSoltadas = monedasSoltadas.filter(m => m.id !== id);
-      
+
       const elemento = zonaSoltar.querySelector(`[data-id="${id}"]`);
       if (elemento) elemento.remove();
-      
-      // Reactivar la moneda original en el área de monedas
+
       const monedaOriginal = document.querySelector(`#area-monedas .coin[data-id="${id}"]`);
       if (monedaOriginal) {
         monedaOriginal.classList.remove('moneda-usada');
         monedaOriginal.style.opacity = '1';
         monedaOriginal.style.cursor = 'grab';
       }
-      
+
       if (monedasSoltadas.length === 0) {
         zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
       }
     }
-    
+
     async function comprobarRespuesta() {
       intentos++;
       document.getElementById('contador-intentos').textContent = intentos;
-      
+
       const feedback = document.getElementById('mensaje-feedback');
       const textoFeedback = document.getElementById('texto-feedback');
-      
+
       if (sumaActualCent === objetivoActualCent) {
         const config = window.elementSdk?.config || defaultConfig;
         const puntos = Math.max(10 - intentos, 5);
-        
+
         reproducirSonidoMonedas();
         crearMonedasCayendo();
-        
+
         feedback.classList.remove('hidden');
         textoFeedback.className = 'text-4xl font-bold mb-6 text-green-600 celebrate';
         textoFeedback.innerHTML = `${config.mensaje_exito || defaultConfig.mensaje_exito}<br><span class="text-yellow-500">+${puntos} puntos</span>`;
-        
+
         hablar(`${config.mensaje_exito || defaultConfig.mensaje_exito}. Has ganado ${puntos} puntos`);
-        
+
         if (jugadorActual && todosJugadores.length < 999) {
           await window.dataSdk.update({
             ...jugadorActual,
@@ -1243,15 +1328,15 @@ document.getElementById('suma-actual').textContent =
             intentos_totales: jugadorActual.intentos_totales + intentos,
             turno_activo: false
           });
-          
+
           document.getElementById('puntos-actuales').textContent = jugadorActual.puntos_totales + puntos;
           await pasarTurno();
         }
       } else {
         feedback.classList.remove('hidden');
         document.getElementById('btn-siguiente-nivel').classList.add('hidden');
-        
-        if (sumaActualCent > objetivoActualCent) { 
+
+        if (sumaActualCent > objetivoActualCent) {
           textoFeedback.className = 'text-4xl font-bold mb-6 text-orange-600 shake';
           textoFeedback.textContent = '¡Demasiado! Quita monedas';
           hablar('Demasiado, quita algunas monedas');
@@ -1260,76 +1345,56 @@ document.getElementById('suma-actual').textContent =
           textoFeedback.textContent = '¡Te falta! Añade más';
           hablar('Te falta, añade más monedas');
         }
-        
+
         setTimeout(() => {
           feedback.classList.add('hidden');
           document.getElementById('btn-siguiente-nivel').classList.remove('hidden');
         }, 2000);
       }
     }
-    
+
     document.getElementById('btn-nueva-partida').addEventListener('click', () => {
       if (todosJugadores.length === 0) {
         mostrarToast('⚠ Crea jugadores primero');
         return;
       }
-      
-      document.getElementById('pantalla-jugadores').classList.add('hidden');
-      document.getElementById('pantalla-dificultad').classList.remove('hidden');
-    });
-    
-    document.getElementById('btn-continuar-partida').addEventListener('click', () => {
-      continuarPartidaActiva();
-    });
-    
-    document.getElementById('opcion-facil').addEventListener('click', () => {
-      dificultadJuego = 'facil';
-      abrirSeleccionParticipantes();
-    });
-    
-    document.getElementById('opcion-dificil').addEventListener('click', () => {
-      dificultadJuego = 'dificil';
-      abrirSeleccionParticipantes();
-    });
-    
-    document.getElementById('btn-volver-dificultad').addEventListener('click', () => {
-      document.getElementById('pantalla-dificultad').classList.add('hidden');
-      document.getElementById('pantalla-jugadores').classList.remove('hidden');
-    });
-    
-    function abrirSeleccionParticipantes() {
+
       participantesSeleccionados = [];
-      document.getElementById('pantalla-dificultad').classList.add('hidden');
-      document.getElementById('pantalla-jugadores').classList.remove('hidden');
+      dificultadesSeleccionadas = {};
       document.getElementById('panel-seleccion').classList.remove('hidden');
       renderizarSeleccionParticipantes();
       actualizarBotonConfirmar();
-    }
-    
+    });
+
+    document.getElementById('btn-continuar-partida').addEventListener('click', () => {
+      continuarPartidaActiva();
+    });
+
     document.getElementById('btn-confirmar-participantes').addEventListener('click', iniciarPartida);
-    
+
     document.getElementById('btn-cancelar-seleccion').addEventListener('click', () => {
       participantesSeleccionados = [];
+      dificultadesSeleccionadas = {};
       document.getElementById('panel-seleccion').classList.add('hidden');
     });
-    
+
     document.getElementById('form-nuevo-jugador').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       if (todosJugadores.length >= 999) {
         mostrarToast('⚠ Límite de 999 jugadores alcanzado');
         return;
       }
-      
+
       const input = document.getElementById('input-nombre');
       const nombre = input.value.trim();
-      
+
       if (!nombre) return;
-      
+
       const boton = e.target.querySelector('button[type="submit"]');
       boton.disabled = true;
       boton.textContent = 'Creando...';
-      
+
       const resultado = await window.dataSdk.create({
         id: 'j_' + Date.now(),
         nombre: nombre,
@@ -1341,10 +1406,10 @@ document.getElementById('suma-actual').textContent =
         partida_id: '',
         orden_turno: 0
       });
-      
+
       boton.disabled = false;
       boton.textContent = 'Crear';
-      
+
       if (resultado.isOk) {
         input.value = '';
         mostrarToast('✅ Jugador creado');
@@ -1353,7 +1418,7 @@ document.getElementById('suma-actual').textContent =
         mostrarToast('❌ Error al crear jugador');
       }
     });
-    
+
     document.getElementById('btn-borrar-todos').addEventListener('click', () => {
       const modal = mostrarModal(`
         <h3 class="text-2xl font-bold mb-4 text-red-700">⚠ ¿Estás seguro?</h3>
@@ -1367,7 +1432,7 @@ document.getElementById('suma-actual').textContent =
           </button>
         </div>
       `);
-      
+
       modal.querySelector('#confirmar-borrado').addEventListener('click', async () => {
         for (const jugador of todosJugadores) {
           await window.dataSdk.delete(jugador);
@@ -1376,28 +1441,27 @@ document.getElementById('suma-actual').textContent =
         mostrarToast('✓ Jugadores eliminados');
         hablar('Todos los jugadores han sido eliminados');
       });
-      
+
       modal.querySelector('#cancelar-borrado').addEventListener('click', () => modal.remove());
     });
-    
+
     document.getElementById('btn-volver').addEventListener('click', () => {
       document.getElementById('pantalla-juego').classList.add('hidden');
       document.getElementById('pantalla-jugadores').classList.remove('hidden');
       document.getElementById('panel-seleccion').classList.add('hidden');
-      
+
       mostrarToast('💾 Partida pausada - Los jugadores pueden continuar');
     });
-    
+
     document.getElementById('btn-comprobar').addEventListener('click', comprobarRespuesta);
-    
+
     document.getElementById('btn-reintentar').addEventListener('click', () => {
       monedasSoltadas = [];
       sumaActualCent = 0;
       document.getElementById('suma-actual').textContent = '0.00€';
       zonaSoltar.innerHTML = '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
       document.getElementById('mensaje-feedback').classList.add('hidden');
-      
-      // Reactivar todas las monedas
+
       const todasLasMonedas = document.querySelectorAll('#area-monedas .coin');
       todasLasMonedas.forEach(moneda => {
         moneda.classList.remove('moneda-usada');
@@ -1405,11 +1469,11 @@ document.getElementById('suma-actual').textContent =
         moneda.style.cursor = 'grab';
       });
     });
-    
+
     document.getElementById('btn-pista').addEventListener('click', () => {
       const falta = objetivoActualCent - sumaActualCent;
       let pista = '';
-      
+
       if (falta > 0) {
         const faltaEuros = falta / 100;
         const dos = Math.floor(falta / 200);
@@ -1417,14 +1481,14 @@ document.getElementById('suma-actual').textContent =
         const cincuenta = Math.floor((falta % 100) / 50);
         const veinte = Math.floor((falta % 50) / 20);
         const diez = (falta % 20) / 10;
-        
+
         let partes = [];
         if (dos > 0) partes.push(`${dos} de 2€`);
         if (uno > 0) partes.push(`${uno} de 1€`);
         if (cincuenta > 0) partes.push(`${cincuenta} de 50¢`);
         if (veinte > 0) partes.push(`${veinte} de 20¢`);
         if (diez > 0) partes.push(`${diez} de 10¢`);
-        
+
         pista = `💡 Te faltan ${faltaEuros.toFixed(2)}€. Necesitas: ${partes.join(', ')}`;
       } else if (falta < 0) {
         const sobraEuros = Math.abs(falta) / 100;
@@ -1432,10 +1496,10 @@ document.getElementById('suma-actual').textContent =
       } else {
         pista = '✓ ¡Perfecto! Pulsa Comprobar';
       }
-      
+
       mostrarToast(pista);
     });
-    
+
     document.getElementById('btn-pasar-turno').addEventListener('click', () => {
       const modal = mostrarModal(`
         <h3 class="text-2xl font-bold mb-4 text-gray-800">¿Pasar turno?</h3>
@@ -1449,16 +1513,16 @@ document.getElementById('suma-actual').textContent =
           </button>
         </div>
       `);
-      
+
       modal.querySelector('#confirmar-pasar').addEventListener('click', async () => {
         await pasarTurno();
         modal.remove();
         actualizarEstadoTurno();
       });
-      
+
       modal.querySelector('#cancelar-pasar').addEventListener('click', () => modal.remove());
     });
-    
+
     document.getElementById('btn-terminar-partida').addEventListener('click', () => {
       const modal = mostrarModal(`
         <h3 class="text-2xl font-bold mb-4 text-purple-700">🏁 ¿Terminar partida?</h3>
@@ -1472,7 +1536,7 @@ document.getElementById('suma-actual').textContent =
           </button>
         </div>
       `);
-      
+
       modal.querySelector('#confirmar-terminar').addEventListener('click', async () => {
         modal.remove();
         const boton = document.getElementById('btn-terminar-partida');
@@ -1480,27 +1544,28 @@ document.getElementById('suma-actual').textContent =
         boton.textContent = 'Finalizando...';
         await terminarPartida();
       });
-      
+
       modal.querySelector('#cancelar-terminar').addEventListener('click', () => modal.remove());
     });
-    
+
     document.getElementById('btn-volver-inicio').addEventListener('click', () => {
       document.getElementById('pantalla-estadisticas').classList.add('hidden');
       document.getElementById('pantalla-jugadores').classList.remove('hidden');
     });
-    
+
     document.getElementById('btn-nueva-partida-stats').addEventListener('click', () => {
       document.getElementById('pantalla-estadisticas').classList.add('hidden');
       document.getElementById('pantalla-jugadores').classList.remove('hidden');
-      
+
       if (todosJugadores.length > 0) {
         participantesSeleccionados = [];
+        dificultadesSeleccionadas = {};
         document.getElementById('panel-seleccion').classList.remove('hidden');
         renderizarSeleccionParticipantes();
         actualizarBotonConfirmar();
       }
     });
-    
+
     document.getElementById('btn-siguiente-nivel').addEventListener('click', () => {
       if (sumaActualCent === objetivoActualCent) {
         nivelActual++;
@@ -1508,34 +1573,34 @@ document.getElementById('suma-actual').textContent =
         iniciarNivel(nivelActual);
       }
     });
-    
+
     async function onConfigChange(config) {
       const titulo = document.getElementById('titulo-principal');
       const instrucciones = document.getElementById('texto-instrucciones');
-      
+
       if (titulo) {
         titulo.textContent = config.titulo_juego || defaultConfig.titulo_juego;
       }
-      
+
       if (instrucciones) {
         instrucciones.textContent = config.texto_instruccion || defaultConfig.texto_instruccion;
       }
     }
-    
+
     async function inicializarApp() {
       if (!window.dataSdk) {
         mostrarToast('❌ Error: SDK no disponible');
         return;
       }
-      
+
       const resultado = await window.dataSdk.init(dataHandler);
-      
+
       if (!resultado.isOk) {
         mostrarToast('❌ Error al cargar datos');
         console.error('Error Data SDK:', resultado.error);
       }
     }
-    
+
     if (window.elementSdk) {
       window.elementSdk.init({
         defaultConfig: defaultConfig,
@@ -1553,13 +1618,13 @@ document.getElementById('suma-actual').textContent =
         ])
       });
     }
-    
+
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', inicializarApp);
     } else {
       inicializarApp();
     }
-    
+
     function generarMonedasFlotantes() {
       const container = document.getElementById('floating-coins-bg');
       const tipos = [
@@ -1567,7 +1632,7 @@ document.getElementById('suma-actual').textContent =
         { clase: 'silver', valor: '2€' },
         { clase: 'copper', valor: '50¢' }
       ];
-      
+
       for (let i = 0; i < 25; i++) {
         const tipo = tipos[Math.floor(Math.random() * tipos.length)];
         const coin = document.createElement('div');
@@ -1576,12 +1641,13 @@ document.getElementById('suma-actual').textContent =
         coin.style.left = Math.random() * 100 + '%';
         coin.style.animationDuration = (Math.random() * 25 + 20) + 's';
         coin.style.animationDelay = Math.random() * 8 + 's';
-        
+
         container.appendChild(coin);
       }
     }
-    
+
     generarMonedasFlotantes();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c93f91b5271f768',t:'MTc3MDMxMDkyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
+
 </html>
