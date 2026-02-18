@@ -89,7 +89,6 @@ let intentos = 0;
 let monedasSoltadas = [];
 let monedaArrastrada = null;
 let dificultadJuego = "facil";
-// Flag para saber si el turno está pendiente de pasar
 let turnoPendiente = false;
 
 function hablar(texto) {
@@ -625,7 +624,6 @@ function limpiarRespuesta() {
     '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
   document.getElementById("mensaje-feedback").classList.add("hidden");
 
-  // Reset btn-siguiente-nivel to hidden
   const btnSiguiente = document.getElementById("btn-siguiente-nivel");
   btnSiguiente.classList.add("hidden");
 
@@ -660,7 +658,6 @@ function iniciarNivel(nivel) {
   document.getElementById("contador-intentos").textContent = "0";
   document.getElementById("mensaje-feedback").classList.add("hidden");
 
-  // Make sure siguiente button is hidden at start of level
   const btnSiguiente = document.getElementById("btn-siguiente-nivel");
   btnSiguiente.classList.add("hidden");
 
@@ -933,7 +930,6 @@ async function comprobarRespuesta() {
         jugadorActual.puntos_totales + puntos;
     }
 
-    // ✅ CAMBIO: mostrar botón "Siguiente jugador" en lugar de pasar turno automáticamente
     turnoPendiente = true;
     btnSiguiente.textContent = "Siguiente jugador →";
     btnSiguiente.classList.remove("hidden");
@@ -1198,7 +1194,6 @@ document
     }
   });
 
-// ✅ CAMBIO: btn-siguiente-nivel ahora pasa el turno al siguiente jugador
 document.getElementById("btn-siguiente-nivel").addEventListener("click", async () => {
   if (turnoPendiente) {
     turnoPendiente = false;
