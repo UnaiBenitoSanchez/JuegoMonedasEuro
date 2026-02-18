@@ -80,7 +80,7 @@ let todosJugadores = [];
 let jugadorActual = null;
 let jugadoresPartida = [];
 let participantesSeleccionados = [];
-let dificultadesSeleccionadas = {}; // Nuevo: almacena la dificultad de cada jugador
+let dificultadesSeleccionadas = {};
 let partidaActualId = null;
 let nivelActual = 1;
 let objetivoActualCent = 0;
@@ -88,7 +88,9 @@ let sumaActualCent = 0;
 let intentos = 0;
 let monedasSoltadas = [];
 let monedaArrastrada = null;
-let dificultadJuego = "facil"; // Ahora se usará la dificultad individual del jugador
+let dificultadJuego = "facil";
+// Flag para saber si el turno está pendiente de pasar
+let turnoPendiente = false;
 
 function hablar(texto) {
   if ("speechSynthesis" in window) {
@@ -330,7 +332,7 @@ window.toggleParticipante = function (jugadorId) {
     delete dificultadesSeleccionadas[jugadorId];
   } else {
     participantesSeleccionados.push(jugadorId);
-    dificultadesSeleccionadas[jugadorId] = "facil"; // Dificultad por defecto
+    dificultadesSeleccionadas[jugadorId] = "facil";
   }
 
   renderizarSeleccionParticipantes();
@@ -377,7 +379,7 @@ async function iniciarPartida() {
           orden_turno: i,
           turno_activo: i === 0,
           nivel_actual: 1,
-          dificultad_partida: dificultadPersonal, // Ahora cada jugador tiene su propia dificultad
+          dificultad_partida: dificultadPersonal,
         });
       }
     }
@@ -418,8 +420,8 @@ function irAlJuego(jugadorId) {
 
   jugadorActual = jugador;
   nivelActual = jugador.nivel_actual;
+  turnoPendiente = false;
 
-  // Usar la dificultad personal del jugador
   if (jugador.dificultad_partida) {
     dificultadJuego = jugador.dificultad_partida;
   }
@@ -434,7 +436,6 @@ function irAlJuego(jugadorId) {
   document.getElementById("puntos-actuales").textContent =
     jugador.puntos_totales;
 
-  // Mostrar la dificultad del jugador
   const dificultadTexto =
     dificultadJuego === "facil" ? "🟡 Modo Fácil" : "🔶 Modo Difícil";
   document.getElementById("dificultad-jugador").textContent = dificultadTexto;
@@ -529,7 +530,6 @@ function mostrarEstadisticas() {
   document.getElementById("pantalla-estadisticas").classList.remove("hidden");
 
   renderizarPodio(ranking);
-
   renderizarTablaEstadisticas(ranking);
 
   if (ranking.length > 0) {
@@ -625,6 +625,10 @@ function limpiarRespuesta() {
     '<p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>';
   document.getElementById("mensaje-feedback").classList.add("hidden");
 
+  // Reset btn-siguiente-nivel to hidden
+  const btnSiguiente = document.getElementById("btn-siguiente-nivel");
+  btnSiguiente.classList.add("hidden");
+
   const todasLasMonedas = document.querySelectorAll("#area-monedas .coin");
   todasLasMonedas.forEach((moneda) => {
     moneda.classList.remove("moneda-usada");
@@ -649,11 +653,16 @@ function iniciarNivel(nivel) {
   sumaActualCent = 0;
   intentos = 0;
   monedasSoltadas = [];
+  turnoPendiente = false;
 
   document.getElementById("nivel-actual").textContent = nivel;
   document.getElementById("suma-actual").textContent = "0.00€";
   document.getElementById("contador-intentos").textContent = "0";
   document.getElementById("mensaje-feedback").classList.add("hidden");
+
+  // Make sure siguiente button is hidden at start of level
+  const btnSiguiente = document.getElementById("btn-siguiente-nivel");
+  btnSiguiente.classList.add("hidden");
 
   generarMonedas();
 }
@@ -893,6 +902,7 @@ async function comprobarRespuesta() {
 
   const feedback = document.getElementById("mensaje-feedback");
   const textoFeedback = document.getElementById("texto-feedback");
+  const btnSiguiente = document.getElementById("btn-siguiente-nivel");
 
   if (sumaActualCent === objetivoActualCent) {
     const config = window.elementSdk?.config || defaultConfig;
@@ -921,11 +931,16 @@ async function comprobarRespuesta() {
 
       document.getElementById("puntos-actuales").textContent =
         jugadorActual.puntos_totales + puntos;
-      await pasarTurno();
     }
+
+    // ✅ CAMBIO: mostrar botón "Siguiente jugador" en lugar de pasar turno automáticamente
+    turnoPendiente = true;
+    btnSiguiente.textContent = "Siguiente jugador →";
+    btnSiguiente.classList.remove("hidden");
+
   } else {
     feedback.classList.remove("hidden");
-    document.getElementById("btn-siguiente-nivel").classList.add("hidden");
+    btnSiguiente.classList.add("hidden");
 
     if (sumaActualCent > objetivoActualCent) {
       textoFeedback.className = "text-4xl font-bold mb-6 text-orange-600 shake";
@@ -939,7 +954,6 @@ async function comprobarRespuesta() {
 
     setTimeout(() => {
       feedback.classList.add("hidden");
-      document.getElementById("btn-siguiente-nivel").classList.remove("hidden");
     }, 2000);
   }
 }
@@ -1184,11 +1198,11 @@ document
     }
   });
 
-document.getElementById("btn-siguiente-nivel").addEventListener("click", () => {
-  if (sumaActualCent === objetivoActualCent) {
-    nivelActual++;
-    if (nivelActual > NIVELES.length) nivelActual = 1;
-    iniciarNivel(nivelActual);
+// ✅ CAMBIO: btn-siguiente-nivel ahora pasa el turno al siguiente jugador
+document.getElementById("btn-siguiente-nivel").addEventListener("click", async () => {
+  if (turnoPendiente) {
+    turnoPendiente = false;
+    await pasarTurno();
   }
 });
 

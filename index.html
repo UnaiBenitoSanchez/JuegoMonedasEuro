@@ -110,14 +110,19 @@
           <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6">
             <p id="texto-instrucciones" class="text-center text-xl text-gray-700 mb-6 font-semibold">Arrastra las
               monedas para formar la cantidad indicada</p>
-            <div class="text-center mb-6">
-              <p class="text-4xl font-bold text-purple-700 mb-2">Forma: <span id="cantidad-objetivo"
-                  class="text-green-600">5€</span></p>
-              <p class="text-2xl text-gray-700">Tu suma: <span id="suma-actual"
-                  class="font-bold text-blue-600">0€</span></p>
-              <p class="text-sm text-gray-600 mt-2">Intentos: <span id="contador-intentos"
-                  class="font-semibold">0</span></p>
+
+            <!-- ✅ NUEVO: Bloque del objetivo más grande y vistoso -->
+            <div class="objetivo-wrapper mb-6">
+              <p class="objetivo-label">🎯 ¡Consigue esta cantidad!</p>
+              <div class="objetivo-cantidad-box">
+                <span id="cantidad-objetivo" class="objetivo-numero">5.00€</span>
+              </div>
+              <div class="flex justify-center gap-8 mt-3">
+                <p class="text-xl text-gray-700">Tu suma: <span id="suma-actual" class="font-bold text-blue-600">0.00€</span></p>
+                <p class="text-sm text-gray-500 self-center">Intentos: <span id="contador-intentos" class="font-semibold">0</span></p>
+              </div>
             </div>
+
             <div class="mb-6">
               <h3 class="text-lg font-bold mb-3 text-gray-700">Monedas disponibles:</h3>
               <div id="area-monedas" class="flex flex-wrap gap-4 justify-center p-4 bg-white rounded-xl min-h-[120px]">
@@ -146,9 +151,10 @@
           </div>
         </div>
         <div id="mensaje-feedback" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
-          <p id="texto-feedback" class="text-4xl font-bold mb-6"></p><button id="btn-siguiente-nivel"
-            class="px-10 py-4 bg-purple-600 text-white text-xl font-bold rounded-xl hover:bg-purple-700"> Siguiente
-            Nivel → </button>
+          <p id="texto-feedback" class="text-4xl font-bold mb-6"></p>
+          <button id="btn-siguiente-nivel" class="hidden px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-xl font-bold rounded-xl hover:from-purple-700 hover:to-pink-600 shadow-lg transform hover:scale-105 transition-all">
+            Siguiente jugador →
+          </button>
         </div>
       </div>
     </div>
