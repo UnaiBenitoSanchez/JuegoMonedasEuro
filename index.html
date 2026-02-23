@@ -4,14 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Juego de Monedas Euros</title>
-
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -20,34 +14,43 @@
   <div class="floating-coins" id="floating-coins-bg"></div>
   <div class="falling-coins-container" id="falling-coins"></div>
   <div class="h-full w-full"
-    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><linearGradient id=%22sky%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23e8f4f8;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23b3d9e8;stop-opacity:1%22 /></linearGradient><linearGradient id=%22ground%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23d4a574;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23a0824d;stop-opacity:1%22 /></linearGradient></defs><rect width=%221200%22 height=%22500%22 fill=%22url(%23sky)%22 /><rect y=%22500%22 width=%221200%22 height=%22300%22 fill=%22url(%23ground)%22 /><rect x=%2250%22 y=%22200%22 width=%22350%22 height=%22350%22 fill=%22%238b4513%22 /><polygon points=%22230,200 50,280 400,280%22 fill=%22%23d2691e%22 /><rect x=%22100%22 y=%22300%22 width=%2250%22 height=%22150%22 fill=%22%234a4a4a%22 /><rect x=%22300%22 y=%22320%22 width=%2240%22 height=%22130%22 fill=%22%234a4a4a%22 /><rect x=%22150%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ff6b6b%22 /><circle cx=%22190%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22190%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22250%22 y=%22280%22 width=%2280%22 height=%2280%22 fill=%22%23ffd700%22 /><circle cx=%22290%22 cy=%22300%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22290%22 cy=%22340%22 r=%228%22 fill=%22%23333%22 /><rect x=%22500%22 y=%22250%22 width=%22300%22 height=%22300%22 fill=%22%23d4a574%22 /><polygon points=%22650,250 500,150 800,150%22 fill=%22%239b8b6f%22 /><rect x=%22540%22 y=%22310%22 width=%2240%22 height=%22190%22 fill=%22%232c3e50%22 /><rect x=%22740%22 y=%22320%22 width=%2240%22 height=%22180%22 fill=%22%232c3e50%22 /><rect x=%22550%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%23e74c3c%22 /><circle cx=%22585%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22585%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22650%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%233498db%22 /><circle cx=%22685%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22685%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22750%22 y=%22280%22 width=%2270%22 height=%2270%22 fill=%22%2327ae60%22 /><circle cx=%22785%22 cy=%22300%22 r=%226%22 fill=%22%23333%22 /><circle cx=%22785%22 cy=%22335%22 r=%226%22 fill=%22%23333%22 /><rect x=%22900%22 y=%22280%22 width=%22250%22 height=%22270%22 fill=%22%23ecf0f1%22 /><polygon points=%221025,280 900,180 1150,180%22 fill=%22%23bdc3c7%22 /><rect x=%22930%22 y=%22350%22 width=%2260%22 height=%22160%22 fill=%22%232c3e50%22 /><rect x=%221050%22 y=%22360%22 width=%2260%22 height=%22150%22 fill=%22%232c3e50%22 /><rect x=%22940%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%23f39c12%22 /><circle cx=%22980%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22980%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><rect x=%221050%22 y=%22310%22 width=%2280%22 height=%2280%22 fill=%22%239b59b6%22 /><circle cx=%221090%22 cy=%22330%22 r=%228%22 fill=%22%23333%22 /><circle cx=%221090%22 cy=%22370%22 r=%228%22 fill=%22%23333%22 /><circle cx=%22100%22 cy=%22100%22 r=%2230%22 fill=%22%23fffacd%22 opacity=%220.8%22 /><circle cx=%22150%22 cy=%2280%22 r=%2220%22 fill=%22%23ffffff%22 opacity=%220.6%22 /><circle cx=%221050%22 cy=%2290%22 r=%2225%22 fill=%22%23ffffff%22 opacity=%220.5%22 /></svg>') no-repeat center; background-attachment: fixed; background-size: cover; position: relative; z-index: 1;">
+    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%), url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 800%22><defs><linearGradient id=%22sky%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23e8f4f8;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23b3d9e8;stop-opacity:1%22 /></linearGradient><linearGradient id=%22ground%22 x1=%220%25%22 y1=%220%25%22 x2=%220%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23d4a574;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23a0824d;stop-opacity:1%22 /></linearGradient></defs><rect width=%221200%22 height=%22500%22 fill=%22url(%23sky)%22 /><rect y=%22500%22 width=%221200%22 height=%22300%22 fill=%22url(%23ground)%22 /></svg>') no-repeat center; background-attachment: fixed; background-size: cover; position: relative; z-index: 1;">
     <div class="max-w-6xl mx-auto px-4 py-8">
 
+      <!-- Pantalla jugadores -->
       <div id="pantalla-jugadores">
         <div class="bg-white rounded-3xl shadow-2xl p-8">
-          <h1 id="titulo-principal" class="text-5xl font-bold text-center mb-8 text-purple-700">🪙 Juego de Monedas
-            Euros 🪙</h1>
-          <div class="text-center mb-8"><button id="btn-nueva-partida"
+          <h1 id="titulo-principal" class="text-5xl font-bold text-center mb-8 text-purple-700">🪙 Juego de Monedas Euros 🪙</h1>
+          <div class="text-center mb-8">
+            <button id="btn-nueva-partida"
               class="px-10 py-5 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl hover:from-green-600 hover:to-green-700 transition-all shadow-lg transform hover:scale-105">
-              🎮 Iniciar Nueva Partida </button>
+              🎮 Iniciar Nueva Partida
+            </button>
             <p class="text-gray-600 mt-3">Selecciona los jugadores para comenzar</p>
-            <div id="continuar-partida-container" class="hidden mt-4"><button id="btn-continuar-partida"
+            <div id="continuar-partida-container" class="hidden mt-4">
+              <button id="btn-continuar-partida"
                 class="px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xl font-bold rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all shadow-lg">
-                ▶️ Continuar Partida en Curso </button>
-            </div>
-          </div>
-          <div id="panel-seleccion" class="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-6">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">✓ Selecciona Participantes y Dificultad</h2>
-            <p class="text-gray-600 mb-4">Haz clic en los jugadores y elige su nivel de dificultad (mínimo 2)</p>
-            <div id="lista-participantes" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            </div>
-            <div class="flex gap-3 justify-center"><button id="btn-confirmar-participantes"
-                class="px-8 py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                ▶ Comenzar Partida </button> <button id="btn-cancelar-seleccion"
-                class="px-8 py-3 bg-gray-500 text-white text-lg font-bold rounded-xl hover:bg-gray-600"> ✕ Cancelar
+                ▶️ Continuar Partida en Curso
               </button>
             </div>
           </div>
+
+          <div id="panel-seleccion" class="hidden bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-6">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">✓ Selecciona Participantes y Dificultad</h2>
+            <p class="text-gray-600 mb-4">Haz clic en los jugadores y elige su nivel de dificultad (mínimo 1)</p>
+            <div id="lista-participantes" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+            <div class="flex gap-3 justify-center">
+              <button id="btn-confirmar-participantes"
+                class="px-8 py-3 bg-blue-600 text-white text-lg font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                ▶ Comenzar Partida
+              </button>
+              <button id="btn-cancelar-seleccion"
+                class="px-8 py-3 bg-gray-500 text-white text-lg font-bold rounded-xl hover:bg-gray-600">
+                ✕ Cancelar
+              </button>
+            </div>
+          </div>
+
           <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
             <h2 class="text-2xl font-bold mb-4 text-gray-800">👥 Jugadores</h2>
             <div id="lista-jugadores" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
@@ -55,51 +58,63 @@
             </div>
             <div class="border-t-2 border-purple-200 pt-6">
               <h3 class="text-xl font-bold mb-4 text-gray-700">➕ Crear Nuevo Jugador</h3>
-              <form id="form-nuevo-jugador" class="flex gap-3"><label for="input-nombre" class="sr-only">Nombre del
-                  jugador</label> <input type="text" id="input-nombre" placeholder="Nombre del jugador"
+              <form id="form-nuevo-jugador" class="flex gap-3">
+                <label for="input-nombre" class="sr-only">Nombre del jugador</label>
+                <input type="text" id="input-nombre" placeholder="Nombre del jugador"
                   class="flex-1 px-4 py-3 text-lg border-2 border-purple-300 rounded-xl focus:outline-none focus:border-purple-500"
-                  maxlength="20" required> <button type="submit"
-                  class="px-6 py-3 bg-purple-600 text-white text-lg font-bold rounded-xl hover:bg-purple-700"> Crear
+                  maxlength="20" required>
+                <button type="submit"
+                  class="px-6 py-3 bg-purple-600 text-white text-lg font-bold rounded-xl hover:bg-purple-700">
+                  Crear
                 </button>
               </form>
             </div>
           </div>
-          <div class="text-center"><button id="btn-borrar-todos"
-              class="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700"> 🗑️ Borrar Todos los
-              Jugadores </button>
+          <div class="text-center">
+            <button id="btn-borrar-todos"
+              class="px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700">
+              🗑️ Borrar Todos los Jugadores
+            </button>
           </div>
         </div>
       </div>
+
+      <!-- Pantalla estadísticas -->
       <div id="pantalla-estadisticas" class="hidden">
         <div class="bg-white rounded-3xl shadow-2xl p-8">
           <h1 class="text-4xl font-bold text-center mb-2 text-purple-700">🏆 Estadísticas de la Partida</h1>
           <p class="text-center text-gray-600 mb-8">Resultados finales</p>
-          <div id="podio-ganadores" class="mb-8">
-          </div>
+          <div id="podio-ganadores" class="mb-8"></div>
           <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
             <h3 class="text-2xl font-bold mb-4 text-gray-800">📊 Detalles Completos</h3>
-            <div id="tabla-estadisticas" class="space-y-3">
-            </div>
+            <div id="tabla-estadisticas" class="space-y-3"></div>
           </div>
-          <div class="flex gap-3 justify-center"><button id="btn-nueva-partida-stats"
-              class="px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg"> 🎮
-              Nueva Partida </button> <button id="btn-volver-inicio"
-              class="px-8 py-4 bg-gray-600 text-white text-xl font-bold rounded-xl hover:bg-gray-700 shadow-lg"> 🏠
-              Volver al Inicio </button>
+          <div class="flex gap-3 justify-center">
+            <button id="btn-nueva-partida-stats"
+              class="px-8 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg">
+              🎮 Nueva Partida
+            </button>
+            <button id="btn-volver-inicio"
+              class="px-8 py-4 bg-gray-600 text-white text-xl font-bold rounded-xl hover:bg-gray-700 shadow-lg">
+              🏠 Volver al Inicio
+            </button>
           </div>
         </div>
       </div>
+
+      <!-- Pantalla juego -->
       <div id="pantalla-juego" class="hidden">
         <div class="bg-white rounded-3xl shadow-2xl p-6 mb-6">
-          <div class="flex justify-between items-center mb-6"><button id="btn-volver"
-              class="px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 font-semibold"> ← Volver </button>
+          <div class="flex justify-between items-center mb-6">
+            <button id="btn-volver"
+              class="px-4 py-2 bg-gray-500 text-white rounded-xl hover:bg-gray-600 font-semibold">
+              ← Volver
+            </button>
             <div class="text-center">
               <h2 id="nombre-jugador-actual" class="text-3xl font-bold text-purple-700"></h2>
-              <p class="text-gray-600">Nivel <span id="nivel-actual">1</span> | <span id="dificultad-jugador"
-                  class="font-semibold"></span></p>
-              <div id="indicador-turno"
-                class="mt-2 px-4 py-2 rounded-full inline-block font-semibold bg-green-200 text-green-800"><span
-                  id="texto-turno">Tu turno</span>
+              <p class="text-gray-600">Nivel <span id="nivel-actual">1</span> | <span id="dificultad-jugador" class="font-semibold"></span></p>
+              <div id="indicador-turno" class="mt-2 px-4 py-2 rounded-full inline-block font-semibold bg-green-200 text-green-800">
+                <span id="texto-turno">Tu turno</span>
               </div>
             </div>
             <div class="text-right">
@@ -107,58 +122,80 @@
               <p class="text-sm text-gray-600">puntos</p>
             </div>
           </div>
+
           <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-6">
-            <p id="texto-instrucciones" class="text-center text-xl text-gray-700 mb-6 font-semibold">Arrastra las
-              monedas para formar la cantidad indicada</p>
+            <p id="texto-instrucciones" class="text-center text-xl text-gray-700 mb-6 font-semibold">
+              Arrastra las monedas para formar la cantidad indicada
+            </p>
+
+            <!-- Timer -->
+            <div id="timer-container" class="hidden text-center mb-4">
+              <div id="timer-display" class="text-4xl font-bold text-orange-500">⏱ 60s</div>
+            </div>
 
             <div class="objetivo-wrapper mb-6">
               <p class="objetivo-label">🎯 ¡Consigue esta cantidad!</p>
               <div class="objetivo-cantidad-box">
-                <span id="cantidad-objetivo" class="objetivo-numero">5.00€</span>
+                <span id="cantidad-objetivo" class="objetivo-numero">5,00€</span>
               </div>
               <div class="flex justify-center gap-8 mt-3">
-                <p class="text-xl text-gray-700">Tu suma: <span id="suma-actual" class="font-bold text-blue-600">0.00€</span></p>
+                <p class="text-xl text-gray-700">Tu suma: <span id="suma-actual" class="font-bold text-blue-600">0,00€</span></p>
                 <p class="text-sm text-gray-500 self-center">Intentos: <span id="contador-intentos" class="font-semibold">0</span></p>
               </div>
             </div>
 
             <div class="mb-6">
               <h3 class="text-lg font-bold mb-3 text-gray-700">Monedas disponibles:</h3>
-              <div id="area-monedas" class="flex flex-wrap gap-4 justify-center p-4 bg-white rounded-xl min-h-[120px]">
-              </div>
+              <div id="area-monedas" class="flex flex-wrap gap-4 justify-center p-4 bg-white rounded-xl min-h-[120px]"></div>
             </div>
+
             <div class="mb-6">
               <h3 class="text-lg font-bold mb-3 text-gray-700">Tu combinación:</h3>
               <div id="zona-soltar" class="drop-zone flex flex-wrap gap-4 justify-center p-6">
                 <p class="text-gray-400 w-full text-center text-lg">Arrastra aquí las monedas</p>
               </div>
             </div>
-            <div class="flex gap-3"><button id="btn-comprobar"
+
+            <div class="flex gap-3">
+              <button id="btn-comprobar"
                 class="flex-1 px-6 py-4 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 shadow-lg">
-                ✓ Comprobar </button> <button id="btn-reintentar"
+                ✓ Comprobar
+              </button>
+              <button id="btn-reintentar"
                 class="px-6 py-4 bg-orange-600 text-white text-xl font-bold rounded-xl hover:bg-orange-700 shadow-lg">
-                🔄 Reintentar </button> <button id="btn-pista"
-                class="px-6 py-4 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg"> 💡
-                Pista </button>
+                🔄 Reintentar
+              </button>
+              <button id="btn-pista"
+                class="px-6 py-4 bg-blue-600 text-white text-xl font-bold rounded-xl hover:bg-blue-700 shadow-lg">
+                💡 Pista
+              </button>
             </div>
-            <div class="mt-4 text-center flex gap-3 justify-center"><button id="btn-pasar-turno"
-                class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700"> ⏩ Pasar Turno
-              </button> <button id="btn-terminar-partida"
-                class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700"> 🏁 Terminar
-                Partida </button>
+
+            <div class="mt-4 text-center flex gap-3 justify-center">
+              <button id="btn-pasar-turno"
+                class="px-6 py-3 bg-gray-600 text-white font-semibold rounded-xl hover:bg-gray-700">
+                ⏩ Pasar Turno
+              </button>
+              <button id="btn-terminar-partida"
+                class="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700">
+                🏁 Terminar Partida
+              </button>
             </div>
           </div>
         </div>
+
         <div id="mensaje-feedback" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center">
           <p id="texto-feedback" class="text-4xl font-bold mb-6"></p>
-          <button id="btn-siguiente-nivel" class="hidden px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-xl font-bold rounded-xl hover:from-purple-700 hover:to-pink-600 shadow-lg transform hover:scale-105 transition-all">
+          <button id="btn-siguiente-nivel"
+            class="hidden px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-xl font-bold rounded-xl hover:from-purple-700 hover:to-pink-600 shadow-lg transform hover:scale-105 transition-all">
             Siguiente jugador →
           </button>
         </div>
       </div>
+
     </div>
   </div>
-  
+
   <script src="script.js"></script>
 </body>
 </html>
